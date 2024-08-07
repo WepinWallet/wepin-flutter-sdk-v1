@@ -1,0 +1,34 @@
+{
+  "name": "wepin_flutter_login_lib",
+  "version": "0.0.1",
+  "summary": "wepin login library for flutter",
+  "description": "wepin login library for flutter",
+  "homepage": "https://github.com/WepinWallet/wepin-flutter-login",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "iotrust": "wepin.contact@iotrust.kr"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "dependencies": {
+    "Flutter": [
+
+    ],
+    "AppAuth": [
+      "~> 1.7.5"
+    ]
+  },
+  "platforms": {
+    "ios": "13.0"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "i386"
+  },
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
+}

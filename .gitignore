@@ -1,0 +1,72 @@
+# Flutter
+.flutter/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+.pub-cache/
+.pub/
+.dart_tool/
+build/
+ios/Flutter/.last_build_id
+.melos_tool
+pubspec_overrides.yaml
+
+# Android
+*.iml
+.gradle/
+gradlew
+gradlew.bat
+gradle-wrapper.jar
+*/gradle-wrapper.properties
+/local.properties
+/.idea
+/captures
+android/.gradle/
+android/app/debug.keystore
+android/app/release.keystore
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/*.xcconfig
+ios/Flutter/ephemeral/
+Flutter/Flutter.xcworkspace/
+ios/Flutter/App.framework
+ios/Flutter/engine/
+ios/.generated/
+GeneratedPluginRegistrant.*
+
+# IntelliJ related
+*.idea/
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Files created by various editors
+*.swp
+*.swo
+*~
+
+# Mac related
+.DS_Store
+
+# Desktop
+.windows/
+.macos/
+.linux/
+
+# Web
+.web/
+
+# Package dependencies
+packages/*/.packages
+packages/*/.flutter-plugins
+packages/*/.flutter-plugins-dependencies
+packages/*/.metadata
