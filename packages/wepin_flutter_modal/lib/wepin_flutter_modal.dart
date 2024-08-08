@@ -22,6 +22,7 @@ class WepinModal {
     _modalContext = context; // Save the context
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
