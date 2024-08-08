@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 
 import 'package:wepin_flutter_login_lib/type/wepin_flutter_login_lib_type.dart';
 import 'package:wepin_flutter_login_lib/wepin_flutter_login_lib.dart';
+import 'package:wepin_flutter_login_lib_example/value/sdk_app_info.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,13 +19,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isBusy = false;
-  String wepinAppId = 'wepinAppId';
-  String wepinAppKey = Platform.isIOS? 'wepinAppKey_ios' : 'wepinAppKey_android';
-  String privateKey = 'privateKey';
-  String googleClientId = 'googleClientId';
-  String appleClientId = 'appleClientId';
-  String naverClientId = 'naverClientId';
-  String discordClientId = 'discordClientId';
+  // String wepinAppId = 'wepinAppId';
+  // String wepinAppKey = Platform.isIOS? 'wepinAppKey_ios' : 'wepinAppKey_android';
+  // String privateKey = 'privateKey';
+  // String googleClientId = 'googleClientId';
+  // String appleClientId = 'appleClientId';
+  // String naverClientId = 'naverClientId';
+  // String discordClientId = 'discordClientId';
   WepinLogin? wepinLogin;
   LoginResult? loginResult;
   String testIdToken = 'idToken';
