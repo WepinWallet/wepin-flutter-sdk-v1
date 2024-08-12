@@ -50,7 +50,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [
-                'appAuthRedirectScheme': 'wepin.appId'
+            'appAuthRedirectScheme': 'wepin.16ac0324118ba5227700f92862d4484e'
         ]
     }
 

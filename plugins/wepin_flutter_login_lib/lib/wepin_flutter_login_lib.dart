@@ -43,7 +43,7 @@ class WepinLogin {
       domain = await WepinCommon.getPackageName();
       // print('domain - $domain');
       version = packageVersion;
-      _wepinNetwork = WepinNetwork(wepinAppKey: _wepinAppKey, domain: domain!, version: version!);
+      _wepinNetwork = WepinNetwork(wepinAppKey: _wepinAppKey, domain: domain!, version: version!, type: 'flutter_login');
 
       await _wepinNetwork?.getAppInfo();
       final firebaseKey = await _wepinNetwork?.getFirebaseConfig();
