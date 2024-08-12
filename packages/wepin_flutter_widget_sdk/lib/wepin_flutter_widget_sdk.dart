@@ -16,13 +16,11 @@ import 'package:wepin_flutter_network/session/wepin_session_check.dart';
 import 'package:wepin_flutter_network/wepin_network.dart';
 import 'package:wepin_flutter_network/wepin_firebase_network.dart';
 import 'package:wepin_flutter_network/wepin_network_types.dart';
-import 'package:wepin_flutter_widget_sdk/js_request.dart';
-import 'package:wepin_flutter_widget_sdk/js_response.dart';
+import 'package:wepin_flutter_common/webview/js_request.dart';
+import 'package:wepin_flutter_common/webview/js_response.dart';
 import 'package:wepin_flutter_widget_sdk/src/version.dart';
 import 'package:wepin_flutter_widget_sdk/wepin_flutter_widget_sdk_type.dart';
 
-typedef RequestHandlerFunction = Future<String?> Function(JSRequest request, JSResponse response);
-typedef ResponseHandlerFunction = Future<String?> Function(JSResponse response);
 
 /// A WepinWidgetSDK.
 class WepinWidgetSDK {

@@ -304,22 +304,6 @@ class WepinSendResponse {
   }
 }
 
-class WidgetAttributes {
-  String defaultLanguage;
-  String defaultCurrency;
-
-  WidgetAttributes({
-    this.defaultLanguage = 'ko',
-    this.defaultCurrency = 'KRW',
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'defaultLanguage': defaultLanguage,
-      'defaultCurrency': defaultCurrency,
-    };
-  }
-}
 
 enum WepinLifeCycle {
   notInitialized, // 'not_initialized'
