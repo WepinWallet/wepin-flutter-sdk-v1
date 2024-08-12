@@ -65,7 +65,7 @@ class WepinWidgetSDK {
       wepinLifeCycle = WepinLifeCycle.initializing;
       domain = await WepinCommon.getPackageName();
       version = packageVersion;
-      _wepinNetwork = WepinNetwork(wepinAppKey: _wepinAppKey, domain: domain!, version: version!);
+      _wepinNetwork = WepinNetwork(wepinAppKey: _wepinAppKey, domain: domain!, version: version!, type: 'flutter_sdk');
       await _wepinNetwork?.getAppInfo();
       final firebaseKey = await _wepinNetwork?.getFirebaseConfig();
       if(firebaseKey != null){
@@ -207,7 +207,7 @@ class WepinWidgetSDK {
       if (context.mounted) {
         await _open(context: context);
       }else {
-        throw WepinError(WepinErrorCode.invalidContext);
+        completer.completeError(WepinError(WepinErrorCode.invalidContext));
       }
       return completer.future;
     }
@@ -508,7 +508,7 @@ class WepinWidgetSDK {
     if (context.mounted) {
       await _open(context: context);
     }else {
-      throw WepinError(WepinErrorCode.invalidContext);
+      completer.completeError(WepinError(WepinErrorCode.invalidContext));
     }
     return completer.future;
   }
