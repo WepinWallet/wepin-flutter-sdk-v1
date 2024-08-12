@@ -1,0 +1,10 @@
+# melos_managed_dependency_overrides: wepin_flutter_login_lib,wepin_flutter_common,wepin_flutter_storage,wepin_flutter_network
+dependency_overrides:
+  wepin_flutter_common:
+    path: ../../../packages/wepin_flutter_common
+  wepin_flutter_login_lib:
+    path: ..
+  wepin_flutter_network:
+    path: ../../../packages/wepin_flutter_network
+  wepin_flutter_storage:
+    path: ../../../packages/wepin_flutter_storage
