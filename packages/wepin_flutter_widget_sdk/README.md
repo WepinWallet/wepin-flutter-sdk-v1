@@ -32,13 +32,15 @@ After signing up for [Wepin Workspace](https://workspace.wepin.io/), navigate to
   - Set `compileSdkVersion` to **34** in the `android/app/build.gradle` file.
 - iOS version **13** or newer is required.
   - Update the `platform :ios` version to **13.0** in the `ios/Podfile` of your Flutter project. Verify and modify the `ios/Podfile` as needed.
+- Dart version **2.18.3** or newer is required.
+- Flutter version **3.3.0** or newer is required.
 
 ## ⏩ Install
 Add the `wepin_flutter_widget_sdk` dependency in your pubspec.yaml file:
 
 ```yaml
 dependencies:
-  wepin_flutter_widget_sdk: ^0.0.1
+  wepin_flutter_widget_sdk: ^0.0.2
 ```
 or run the following command:
 
@@ -530,6 +532,7 @@ The `send()` method sends a transaction and returns the transaction ID informati
 - account \<WepinAccount> - The account from which the transaction will be sent.
   - network \<String> - The network associated with the account.
   - address \<String>  - The address of the account.
+  - contract \<String> __optional__ The contract address of the token.
 - txData \<WepinTxData> __optional__ - The transaction data to be sent.
   - to \<String> - The address to which the transaction is being sent.
   - amount \<String> - The amount of the transaction.
@@ -545,13 +548,26 @@ The `send()` method sends a transaction and returns the transaction ID informati
 ```dart
 final result = await wepinSDK.send(context, {
     account: WepinAccount(
-        address: '0x0000001111112222223333334444445555556666',
-        network: 'Ethereum',
+      address: '0x0000001111112222223333334444445555556666',
+      network: 'Ethereum',
     ),
     txData: WepinTxData(
-        to: '0x9999991111112222223333334444445555556666',
-        amount: '0.1',
+      to: '0x9999991111112222223333334444445555556666',
+      amount: '0.1',
     )
+})
+
+// token send
+final result = await wepinSDK.send(context, {
+  account: WepinAccount(
+    address: '0x0000001111112222223333334444445555556666',
+    network: 'Ethereum',
+    contract: '0x9999991111112222223333334444445555556666'
+  ),
+  txData: WepinTxData(
+    to: '0x9999991111112222223333334444445555556666',
+    amount: '0.1',
+  )
 })
 ```
 - response
