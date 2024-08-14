@@ -1,12 +1,12 @@
 <br/>
 
 <p align="center">
-  <a href="https://www.wepin.io/">
+  <a href="https://wepin.io">
       <picture>
-        <source media="(prefers-color-scheme: dark)">
-        <img alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main/assets/wepin_logo_color.png?raw=true" width="250" height="auto">
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_logo_white.png">
+        <img bg_color="white" alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_logo_color.png" width="250" height="auto">
       </picture>
-</a>
+  </a>
 </p>
 
 <br>
@@ -28,10 +28,13 @@ After signing up for [Wepin Workspace](https://workspace.wepin.io/), navigate to
 
 ## ⏩ Requirements
 
-- Android API version 21 or newer is required.
-- iOS version 13 or newer is required.
+- Android API version **21** or newer is required.
+- iOS version **13** or newer is required.
+    - Update the `platform :ios` version to **13.0** in the `ios/Podfile` of your Flutter project. Verify and modify the `ios/Podfile` as needed.
+- Dart version **2.18.3** or newer is required.
+- Flutter version **3.3.0** or newer is required.
 
-> **‼️ Notice ‼️**
+> [!NOTE]
 > 
 > Due to potential multidex issues, it is recommended to use Android compiler SDK version **21** or higher. 
 >
@@ -53,7 +56,7 @@ Add the `wepin_flutter_login_lib` dependency in your pubspec.yaml file:
 
 ```yaml
 dependencies:
-  wepin_flutter_login_lib: ^0.0.1
+  wepin_flutter_login_lib: ^0.0.3
 ```
 or run the following command:
 
@@ -393,7 +396,7 @@ final result = getSignForLogin({required String privateKey, required String mess
 
 - \<String> - The generated signature.
 
-> ‼️ Caution ‼️
+> [!CAUTION]
 >
 > The authentication key (`privateKey`) must be stored securely and must not be exposed to the outside. It is recommended to execute the `getSignForLogin()` method on the backend rather than the frontend for enhanced security and protection of sensitive information.  [How to Implement Direct Signature Generation Functions](https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main/packages/login/SignatureGenerationMethods.md#using-secp256k1-and-crypto-modules)
 
