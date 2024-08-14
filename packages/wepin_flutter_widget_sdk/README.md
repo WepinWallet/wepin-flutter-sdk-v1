@@ -1,12 +1,12 @@
 <br/>
 
 <p align="center">
-  <a href="https://www.wepin.io/">
+  <a href="https://wepin.io">
       <picture>
-        <source media="(prefers-color-scheme: dark)">
-        <img alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main/assets/wepin_logo_color.png?raw=true" width="250" height="auto">
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_logo_white.png">
+        <img bg_color="white" alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_logo_color.png" width="250" height="auto">
       </picture>
-</a>
+  </a>
 </p>
 
 <br>
@@ -108,9 +108,7 @@ Add the below line in your app's `AndroidMainfest.xml` file
       flutter_additional_ios_build_settings(target)
   
       target.build_configurations.each do |config|
-        # You can remove unused permissions here
-        # for more information: https://github.com/BaseflowIT/flutter-permission-handler/blob/master/permission_handler/ios/Classes/PermissionHandlerEnums.h
-        # e.g. when you don't need camera permission, just add 'PERMISSION_CAMERA=0'
+        # For more information, refer to https://github.com/BaseflowIT/flutter-permission-handler/blob/master/permission_handler/ios/Classes/PermissionHandlerEnums.h
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
           '$(inherited)',
           ## dart: PermissionGroup.camera

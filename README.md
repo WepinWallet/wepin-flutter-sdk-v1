@@ -1,17 +1,15 @@
 <br/>
 
 <p align="center">
-  <a href="https://www.wepin.io/">
+  <a href="https://wepin.io">
       <picture>
-        <source media="(prefers-color-scheme: dark)">
-        <img alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main/assets/wepin_logo_color.png?raw=true" width="250" height="auto">
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_logo_white.png">
+        <img bg_color="white" alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_logo_color.png" width="250" height="auto">
       </picture>
-</a>
+  </a>
 </p>
 
 <br>
-
-
 
 # Wepin Flutter SDK
 
@@ -28,15 +26,18 @@
 After signing up for [Wepin Workspace](https://workspace.wepin.io/), go to the development tools menu and enter the information for each app platform to receive your App ID and App Key.
 
 <br>
+
 <p align="center">
   <a href="https://workspace.wepin.io/">
       <picture>
-        <source media="(prefers-color-scheme: dark)">
-        <img alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_workspace_logo_color.png" width="250" height="auto">
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_workspace_logo.png">
+        <img bg_color="white" alt="wepin logo" src="https://github.com/WepinWallet/wepin-web-sdk-v1/blob/main//assets/wepin_workspace_logo_color.png" width="250" height="auto">
       </picture>
-</a>
+  </a>
 </p>
+
 <br>
+
 
 ## ⏩ Packages within this repository
 | Package Name                                                    | Version                                                                                                                                                            | Description                                                         |
