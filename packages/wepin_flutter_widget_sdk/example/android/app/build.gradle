@@ -51,7 +51,7 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-            'appAuthRedirectScheme': 'wepin.appId'
+            'appAuthRedirectScheme': 'wepin.a840783376386107736eed117085db29'
         ]
     }
 

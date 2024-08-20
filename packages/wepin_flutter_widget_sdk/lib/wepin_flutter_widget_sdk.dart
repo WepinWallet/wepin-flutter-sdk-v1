@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -431,13 +430,16 @@ class WepinWidgetSDK {
   }
 
   String _normalizeAmount(String amount) {
-    try {
-      Decimal parsedAmount = Decimal.parse(amount);
-      return parsedAmount.toString();
-    } catch (e) {
+    // 정규식: 소수점 이하 자릿수를 제한하지 않는 숫자 형식
+    final RegExp regExp = RegExp(r'^\d+(\.\d+)?$');
+
+    if (regExp.hasMatch(amount)) {
+      return amount;
+    } else {
       throw WepinError(WepinErrorCode.invalidParameters, 'Invalid amount format: $amount');
     }
   }
+
 
   Future<WepinSendResponse> send(BuildContext context, {required WepinAccount account, WepinTxData? txData}) async {
     if (!_isInitialized) {
