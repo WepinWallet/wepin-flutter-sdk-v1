@@ -146,6 +146,8 @@ class WepinLogin {
     }
   }
 
+
+
   Future<LoginResult> _loginWithEmailAndResetPasswordState(String email, String password) async {
     await _wepinSessionManager?.clearSession();
 
@@ -323,7 +325,7 @@ class WepinLogin {
   }
 
   Future<LoginResult> _doFirebaseLoginWithCustomToken(
-      String customToken) async {
+      String customToken, String provider) async {
     final signInResult = await _wepinFirebaseNetwork!.signInWithCustomToken(customToken);
 
     final idToken = signInResult.idToken;
@@ -331,10 +333,10 @@ class WepinLogin {
 
     await _wepinSessionManager?.setFirebaseSessionStorage(WepinFBToken(idToken: idToken, refreshToken: refreshToken), 'external_token');
 
-    return LoginResult(provider: 'external_token', token: WepinFBToken( idToken: idToken, refreshToken: refreshToken));
+    return LoginResult(provider: provider, token: WepinFBToken( idToken: idToken, refreshToken: refreshToken));
   }
 
-  Future<LoginResult> loginWithIdToken({required String idToken, required String sign}) async {
+  Future<LoginResult> loginWithIdToken({required String idToken, String? sign}) async {
     if (!_isInitialized) {
       throw WepinError(WepinErrorCode.notInitialized);
     }
@@ -348,10 +350,10 @@ class WepinLogin {
 
     final res = await _wepinNetwork!.loginOAuthIdToken(params);
 
-    return await _doFirebaseLoginWithCustomToken(res.token!);
+    return await _doFirebaseLoginWithCustomToken(res.token!, 'external_token');
   }
 
-  Future<LoginResult> loginWithAccessToken({required String provider, required String accessToken, required String sign}) async {
+  Future<LoginResult> loginWithAccessToken({required String provider, required String accessToken, String? sign}) async {
     if (!_isInitialized) {
       throw WepinError(WepinErrorCode.notInitialized);
     }
@@ -366,7 +368,7 @@ class WepinLogin {
 
     final res = await _wepinNetwork!.loginOAuthAccessToken(params);
 
-    return await _doFirebaseLoginWithCustomToken(res.token!);
+    return await _doFirebaseLoginWithCustomToken(res.token!, 'external_token');
   }
 
   Future<LoginResult> getRefreshFirebaseToken() async {
@@ -393,6 +395,50 @@ class WepinLogin {
     } else {
       throw WepinError(WepinErrorCode.invalidLoginSession);
     }
+  }
+
+
+  Future<LoginResult?> loginFirebaseWithOauthProvider({required String provider, required String clientId}) async {
+    final oauthRes = await loginWithOauthProvider(
+        provider: provider, clientId: clientId);
+    if(oauthRes == null) {
+      throw WepinError(WepinErrorCode.failedLogin, 'failed oauth login');
+    }
+    await _wepinSessionManager?.clearSession();
+    final res;
+    if(oauthRes.type == WepinOauthTokenType.idToken) {
+      final params = LoginOauthIdTokenRequest(idToken: oauthRes.token);
+
+      res = await _wepinNetwork!.loginOAuthIdToken(params);
+    }else {
+      final params = LoginOauthAccessTokenRequest(provider: provider, accessToken: oauthRes.token);
+
+      res = await _wepinNetwork!.loginOAuthAccessToken(params);
+    }
+    return await _doFirebaseLoginWithCustomToken(res.token!, provider);
+  }
+
+  Future<WepinUser?> loginWepinWithOauthProvider({required String provider, required String clientId}) async {
+    final firebaseRes = await loginFirebaseWithOauthProvider(provider: provider, clientId: clientId);
+    if(firebaseRes == null ){
+      throw WepinError(WepinErrorCode.failedLogin, 'failed oauth firebase login');
+    }
+    return await loginWepin(firebaseRes);
+  }
+
+  Future<WepinUser?> loginWepinWithIdToken({required String idToken, String? sign}) async {
+    final firebaseRes = await loginWithIdToken(idToken: idToken, sign: sign);
+    return await loginWepin(firebaseRes);
+  }
+
+  Future<WepinUser?> loginWepinWithAccessToken({required String provider, required String accessToken, String? sign}) async {
+    final firebaseRes = await loginWithAccessToken(provider: provider, accessToken: accessToken, sign: sign);
+    return await loginWepin(firebaseRes);
+  }
+
+  Future<WepinUser?> loginWepinWithEmailAndPassword({required String email, required String password}) async {
+    final firebaseRes = await loginWithEmailAndPassword(email: email, password: password);
+    return await loginWepin(firebaseRes);
   }
 
   Future<WepinUser?> loginWepin(LoginResult params) async {

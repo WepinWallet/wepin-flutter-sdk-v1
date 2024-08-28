@@ -43,6 +43,17 @@ class _MyAppState extends State<MyApp> {
     'getRefreshFirebaseToken',
     'loginWepin',
     'getCurrentWepinUser',
+    'loginFirebaseWithOauthProvider(google)',
+    'loginFirebaseWithOauthProvider(apple)',
+    'loginFirebaseWithOauthProvider(naver)',
+    'loginFirebaseWithOauthProvider(discord)',
+    'loginWepinWithOauthProvider(google)',
+    'loginWepinWithOauthProvider(apple)',
+    'loginWepinWithOauthProvider(naver)',
+    'loginWepinWithOauthProvider(discord)',
+    'loginWepinWithIdToken',
+    'loginWepinWithAccessToken',
+    'loginWepinWithEmailAndPassword',
     'logout',
     'getSignForLogin',
     'finalize',
@@ -92,6 +103,19 @@ class _MyAppState extends State<MyApp> {
       'getRefreshFirebaseToken': () async => await wepinLogin?.getRefreshFirebaseToken(),
       'loginWepin': () async => await loginWepin(),
       'getCurrentWepinUser': () async => await wepinLogin?.getCurrentWepinUser(),
+
+      'loginFirebaseWithOauthProvider(google)': () async => loginFirebaseOauthProvider('google', googleClientId),
+      'loginFirebaseWithOauthProvider(apple)': () async => loginFirebaseOauthProvider('apple', appleClientId),
+      'loginFirebaseWithOauthProvider(naver)': () async => loginFirebaseOauthProvider('naver', naverClientId),
+      'loginFirebaseWithOauthProvider(discord)': () async => loginFirebaseOauthProvider('discord', discordClientId),
+      'loginWepinWithOauthProvider(google)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'google', clientId: googleClientId),
+      'loginWepinWithOauthProvider(apple)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'apple', clientId: appleClientId),
+      'loginWepinWithOauthProvider(naver)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'naver', clientId: naverClientId),
+      'loginWepinWithOauthProvider(discord)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'discord', clientId: discordClientId),
+      'loginWepinWithEmailAndPassword': () async => await  wepinLogin?.loginWepinWithEmailAndPassword(email: 'dfcf1d28a921@drmail.in', password: r'abc1234!'),
+      'loginWepinWithIdToken': () async => await wepinLogin?.loginWepinWithIdToken(idToken: ''),
+      'loginWepinWithAccessToken': () async =>  await wepinLogin?.loginWepinWithAccessToken(accessToken: '', provider: 'naver'),
+
       'logout': () async => await wepinLogin?.logoutWepin(),
       'getSignForLogin': () async => wepinLogin?.getSignForLogin(privateKey: privateKey, message: testIdToken),
       'finalize': () async => await wepinLogin?.finalize(),
@@ -126,6 +150,12 @@ class _MyAppState extends State<MyApp> {
     } else {
       resLogin = await loginAndSetLoginResult(() async => await wepinLogin!.loginWithIdToken(idToken: res!.token, sign: sign!));
     }
+    return resLogin;
+  }
+
+  Future<LoginResult?> loginFirebaseOauthProvider(String provider, String clientId) async {
+    LoginResult? resLogin = await loginAndSetLoginResult(() async =>
+    await wepinLogin!.loginFirebaseWithOauthProvider(provider: provider, clientId: clientId));
     return resLogin;
   }
 

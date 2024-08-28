@@ -56,7 +56,7 @@ Add the `wepin_flutter_login_lib` dependency in your pubspec.yaml file:
 
 ```yaml
 dependencies:
-  wepin_flutter_login_lib: ^0.0.4
+  wepin_flutter_login_lib: ^0.0.5
 ```
 or run the following command:
 
@@ -67,13 +67,14 @@ flutter pub add wepin_flutter_login_lib
 
 ## ⏩ Getting Started
 
-To enable OAuth login functionality (loginWithOauthProvider), you need to configure the Deep Link Scheme.
+### Deep Link Setting
+The Deep Link configuration is required for logging into Wepin. Setting up the Deep Link Scheme allows your app to handle external URL calls.
 
-Deep Link scheme format : `wepin. + Your Wepin App ID`
+The format for the Deep Link scheme is `wepin. + Your Wepin App ID`
 
-### Android
+#### Android
 
-When a custom scheme is used, the WepinWidget SDK can be easily configured to capture all redirects using this custom scheme through a manifest placeholder in the `build.gradle (app)` file::
+On Android, you can configure the Wepin Login Library to handle all redirects using a custom scheme by adding a manifest placeholder in the `build.gradle (app)` file::
 
 ```kotlin
 // For Deep Link => RedirectScheme Format: wepin. + Wepin App ID
@@ -82,11 +83,11 @@ android.defaultConfig.manifestPlaceholders = [
 ]
 ```
 
-### iOS
+#### iOS
 
-You must add the app's URL scheme to the `Info.plist` file. This is necessary for redirection back to the app after the authentication process.
+On iOS, you need to add the app's URL scheme to the Info.plist file. This is necessary to enable redirection back to the app after the authentication process. 
 
-The value of the URL scheme should be `'wepin.' + your Wepin app id`.
+The URL scheme value should be 'wepin.' + your Wepin App ID.
 
 ```xml
 <key>CFBundleURLTypes</key>
@@ -101,6 +102,16 @@ The value of the URL scheme should be `'wepin.' + your Wepin app id`.
     </dict>
 </array>
 ```
+
+### OAuth Login Provider Setup
+
+If you want to use OAuth login functionality (e.g., loginWithOauthProvider), you need to set up OAuth login providers.
+To do this, you must first register your OAuth login provider information in the [Wepin Workspace](https://workspace.wepin.io/). 
+Navigate to the Login tab under the Developer Tools menu, click the Add or Set Login Provider button in the Login Provider section, and complete the registration.  
+
+![image](https://github.com/user-attachments/assets/b7a7f6d3-69a7-4ee5-ab66-bad57a715fda)
+
+---
 
 ## ⏩ Import SDK
 ```dart
@@ -157,6 +168,9 @@ An in-app browser will open and proceed to log in to the specified OAuth provide
 #### Parameters
 - `provider` \<String> - The OAuth login provider (e.g., 'google', 'naver', 'discord', 'apple').
 - `clientId` \<String> - The client ID of the OAuth login provider.
+
+> [!NOTE]
+> For details on setting up OAuth providers, refer to the [OAuth Login Provider Setup section](#oauth-login-provider-setup).
 
 #### Returns
 
@@ -294,7 +308,15 @@ The `loginWithIdToken()` method logs in to Wepin Firebase using an external ID t
 #### Parameters
 
 - `idToken` \<String> - The ID token value to be used for login.
-- `sign` \<String> - The signature value for the token provided as the first parameter. (Returned value of [getSignForLogin()](#getSignForLogin))
+- `sign` \<String?> - __optional__ The signature value for the token provided as the first parameter. (Returned value of [getSignForLogin()](#getSignForLogin))
+
+> [!NOTE]
+> Starting from wepin_flutter_login_lib version 0.0.5, the sign value is optional.
+> 
+> If you choose to remove the authentication key issued from the [Wepin Workspace](https://workspace.wepin.io/), you may opt not to use the `sign` value. 
+>
+> (Wepin Workspace > Development Tools menu > Login tab > Auth Key > Delete)
+> > The Auth Key menu is visible only if an authentication key was previously generated.
 
 #### Returns
 
@@ -342,7 +364,15 @@ The `loginWithAccessToken()` method logs in to Wepin Firebase using an external 
 
 - `provider` \<'naver'|'discord'>  - The provider that issued the access token.
 - `accessToken` \<String> - The access token value to be used for login.
-- `sign` \<String> - The signature value for the token provided as the first parameter. [getSignForLogin()](#getSignForLogin))
+- `sign` \<String?> - __optional__ The signature value for the token provided as the first parameter. [getSignForLogin()](#getSignForLogin))
+
+> [!NOTE]
+> Starting from wepin_flutter_login_lib version 0.0.5, the sign value is optional.
+>
+> If you choose to remove the authentication key issued from the [Wepin Workspace](https://workspace.wepin.io/), you may opt not to use the `sign` value. 
+>
+> (Wepin Workspace > Development Tools menu > Login tab > Auth Key > Delete)
+> > The Auth Key menu is visible only if an authentication key was previously generated.
 
 #### Returns
 
@@ -578,6 +608,393 @@ WepinUser(
     userId: "120349034824234234",
     email: "abc@gmail.com",
     provider: "google",
+    use2FA: true,
+  ),
+  walletId: "abcdsfsf123",
+  userStatus: WepinUserStatus(
+    loginStatus: "complete",
+    pinRequired: false,
+  ),
+  token: WepinToken(
+    accessToken: "access_token",
+    refreshToken: "refresh_token",
+  )
+)
+```
+
+### loginFirebaseWithOauthProvider
+
+```dart
+await wepinLogin.loginFirebaseWithOauthProvider({required String provider, required String clientId})
+```
+
+This method combines the functionality of `loginWithOauthProvider`, `loginWithIdToken`, and `loginWithAccessToken`. 
+It opens an in-app browser to log in to Wepin Firebase through the specified OAuth login provider. Upon successful login, it returns Firebase login information.
+
+> [!CAUTION]
+> This method can only be used after the authentication key has been deleted from the [Wepin Workspace](https://workspace.wepin.io/).
+>
+> (Wepin Workspace > Development Tools menu > Login tab > Auth Key > Delete)
+> > The Auth Key menu is visible only if an authentication key was previously generated.
+
+#### Supported Version
+Supported from version *`0.0.5`* and later.
+
+#### Parameters
+- `provider` \<String> - The OAuth login provider (e.g., 'google', 'naver', 'discord', 'apple').
+- `clientId` \<String> - The client ID of the OAuth login provider.
+  
+> [!NOTE]
+> For details on setting up OAuth providers, refer to the [OAuth Login Provider Setup section](#oauth-login-provider-setup).
+
+#### Returns
+
+- Future\<LoginResult>
+    - `provider` \<'external_token'> - The provider used for the login.
+    - `token` \<WepinFBToken>
+        - `idToken` \<String> - The Wepin Firebase ID token.
+        - `refreshToken` \<String> - The Wepin Firebase refresh token.
+
+#### Exception
+
+- [WepinError](#WepinError)
+
+#### Example
+
+```dart
+final user = await wepinLogin.loginFirebaseWithOauthProvider(
+    provider:'apple', 
+    clietId:'apple-client-id'
+);
+```
+
+- response
+
+```dart
+LoginResult(
+  provider: "apple",
+  token: WepinFBToken(
+    idToken: "ab2231df....ad0f3291",
+    refreshToken: "eyJHGciO....adQssw5c",
+  )
+)
+
+```
+
+
+### loginWepinWithOauthProvider
+
+```dart
+await wepinLogin.loginWepinWithOauthProvider({required String provider, required String clientId})
+```
+
+This method combines the functionality of `loginFirebaseWithOauthProvider` and `loginWepin`. 
+It opens an in-app browser to log in to Wepin through the specified OAuth login provider. Upon successful login, it returns Wepin user information.
+
+> [!CAUTION]
+> This method can only be used after the authentication key has been deleted from the [Wepin Workspace](https://workspace.wepin.io/).
+> 
+> (Wepin Workspace > Development Tools menu > Login tab > Auth Key > Delete)
+> > The Auth Key menu is visible only if an authentication key was previously generated.
+
+#### Supported Version
+Supported from version *`0.0.5`* and later.
+
+#### Parameters
+- `provider` \<String> - The OAuth login provider (e.g., 'google', 'naver', 'discord', 'apple').
+- `clientId` \<String> - The client ID of the OAuth login provider.
+
+> [!NOTE]
+> For details on setting up OAuth providers, refer to the [OAuth Login Provider Setup section](#oauth-login-provider-setup).
+
+#### Returns
+
+- Future\<WepinUser> - A Future that resolves to a WepinUser object containing the user's login status and information.
+    - status \<'success'|'fail'>  - The login status.
+    - userInfo \<WepinUserInfo> __optional__ - The user's information, including:
+        - userId \<String> - The user's ID.
+        - email \<String> - The user's email.
+        - provider \<'google'|'apple'|'naver'|'discord'|'email'|'external_token'> - The login provider.
+        - use2FA \<bool> - Whether the user uses two-factor authentication.
+    - walletId \<String> = The user's wallet ID.
+    - userStatus: \<WepinUserStatus> - The user's status of wepin login. including:
+        - loginStatus: \<'complete' | 'pinRequired' | 'registerRequired'> - If the user's loginStatus value is not complete, the user must be registered in Wepin.
+        - pinRequired?: <bool> - Whether a PIN is required.
+    - token: \<WepinToken> - The user's token of wepin.
+        - accessToken: \<String> - The access token.
+        - refreshToken \<String> - The refresh token.
+
+#### Exception
+
+- [WepinError](#WepinError)
+
+#### Example
+
+```dart
+final wepinLogin = WepinLogin(appId: 'appId', appKey: 'appKey');
+await wepinLogin.init();
+final userInfo = await wepinLogin.loginWepinWithOauthProvider(
+  provider: 'google',
+  clientId; 'google-client-id'
+);
+
+final userStatus = userInfo.userStatus;
+if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
+    // Wepin register
+}
+```
+
+- response
+```dart
+WepinUser(
+  status: "success",
+  userInfo: WepinUserInfo(
+    userId: "120349034824234234",
+    email: "abc@gmail.com",
+    provider: "google",
+    use2FA: true,
+  ),
+  walletId: "abcdsfsf123",
+  userStatus: WepinUserStatus(
+    loginStatus: "complete",
+    pinRequired: false,
+  ),
+  token: WepinToken(
+    accessToken: "access_token",
+    refreshToken: "refresh_token",
+  )
+)
+```
+
+
+### loginWepinWithIdToken
+
+```dart
+await wepinLogin.loginWepinWithIdToken({required String idToken, String? sign})
+```
+
+This method integrates the functions of `loginWithIdToken` and `loginWepin`. 
+The `loginWepinWithIdToken` method logs the user into Wepin using an external ID token. Upon successful login, it returns Wepin user information.
+
+#### Supported Version
+Supported from version *`0.0.5`* and later.
+
+#### Parameters
+
+- `idToken` \<String> - The id token value to be used for login.
+- `sign` \<String?> - __optional__ The signature value for the token provided as the first parameter. [getSignForLogin()](#getSignForLogin))
+
+> [!NOTE]
+> If you choose to remove the authentication key issued from the Wepin Workspace, you may opt not to use the `sign` value.
+>
+> (Wepin Workspace > Development Tools menu > Login tab > Auth Key > Delete)
+> > The Auth Key menu is visible only if an authentication key was previously generated.
+
+
+#### Returns
+
+- Future\<WepinUser> - A Future that resolves to a WepinUser object containing the user's login status and information.
+    - status \<'success'|'fail'>  - The login status.
+    - userInfo \<WepinUserInfo> __optional__ - The user's information, including:
+        - userId \<String> - The user's ID.
+        - email \<String> - The user's email.
+        - provider \<'google'|'apple'|'naver'|'discord'|'email'|'external_token'> - The login provider.
+        - use2FA \<bool> - Whether the user uses two-factor authentication.
+    - walletId \<String> = The user's wallet ID.
+    - userStatus: \<WepinUserStatus> - The user's status of wepin login. including:
+        - loginStatus: \<'complete' | 'pinRequired' | 'registerRequired'> - If the user's loginStatus value is not complete, the user must be registered in Wepin.
+        - pinRequired?: <bool> - Whether a PIN is required.
+    - token: \<WepinToken> - The user's token of wepin.
+        - accessToken: \<String> - The access token.
+        - refreshToken \<String> - The refresh token.
+
+#### Exception
+
+- [WepinError](#WepinError)
+
+#### Example
+
+```dart
+final wepinLogin = WepinLogin(appId: 'appId', appKey: 'appKey');
+await wepinLogin.init();
+final userInfo = await wepinLogin.loginWepinWithIdToken(
+  idToken:'eyJHGciO....adQssw5c',
+);
+
+final userStatus = userInfo.userStatus;
+if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
+    // Wepin register
+}
+```
+
+- response
+```dart
+WepinUser(
+  status: "success",
+  userInfo: WepinUserInfo(
+    userId: "120349034824234234",
+    email: "abc@gmail.com",
+    provider: "external_token",
+    use2FA: true,
+  ),
+  walletId: "abcdsfsf123",
+  userStatus: WepinUserStatus(
+    loginStatus: "complete",
+    pinRequired: false,
+  ),
+  token: WepinToken(
+    accessToken: "access_token",
+    refreshToken: "refresh_token",
+  )
+)
+```
+
+### loginWepinWithAccessToken
+
+```dart
+await wepinLogin.loginWepinWithAccessToken({required String provider, required String accessToken, String? sign})
+```
+
+This method integrates the functions of `loginWithAccessToken` and `loginWepin`. 
+The `loginWepinWithAccessToken` method logs the user into Wepin using an external access token. Upon successful login, it returns Wepin user information.
+
+#### Supported Version
+Supported from version *`0.0.5`* and later.
+
+#### Parameters
+
+- `provider` \<'naver'|'discord'>  - The provider that issued the access token.
+- `accessToken` \<String> - The access token value to be used for login.
+- `sign` \<String?> - __optional__ The signature value for the token provided as the first parameter. [getSignForLogin()](#getSignForLogin))
+
+> [!NOTE]
+> If you choose to remove the authentication key issued from the Wepin Workspace, you may opt not to use the `sign` value.
+>
+> (Wepin Workspace > Development Tools menu > Login tab > Auth Key > Delete)
+> > The Auth Key menu is visible only if an authentication key was previously generated.
+
+
+#### Returns
+
+- Future\<WepinUser> - A Future that resolves to a WepinUser object containing the user's login status and information.
+    - status \<'success'|'fail'>  - The login status.
+    - userInfo \<WepinUserInfo> __optional__ - The user's information, including:
+        - userId \<String> - The user's ID.
+        - email \<String> - The user's email.
+        - provider \<'google'|'apple'|'naver'|'discord'|'email'|'external_token'> - The login provider.
+        - use2FA \<bool> - Whether the user uses two-factor authentication.
+    - walletId \<String> = The user's wallet ID.
+    - userStatus: \<WepinUserStatus> - The user's status of wepin login. including:
+        - loginStatus: \<'complete' | 'pinRequired' | 'registerRequired'> - If the user's loginStatus value is not complete, the user must be registered in Wepin.
+        - pinRequired?: <bool> - Whether a PIN is required.
+    - token: \<WepinToken> - The user's token of wepin.
+        - accessToken: \<String> - The access token.
+        - refreshToken \<String> - The refresh token.
+
+#### Exception
+
+- [WepinError](#WepinError)
+
+#### Example
+
+```dart
+final wepinLogin = WepinLogin(appId: 'appId', appKey: 'appKey');
+await wepinLogin.init();
+final userInfo = await wepinLogin.loginWepinWithAccessToken(
+    provider: 'naver',
+    accessToken:'eyJHGciO....adQssw5c',
+);
+
+final userStatus = userInfo.userStatus;
+if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
+    // Wepin register
+}
+```
+
+- response
+```dart
+WepinUser(
+  status: "success",
+  userInfo: WepinUserInfo(
+    userId: "120349034824234234",
+    email: "abc@naver.com",
+    provider: "external_token",
+    use2FA: true,
+  ),
+  walletId: "abcdsfsf123",
+  userStatus: WepinUserStatus(
+    loginStatus: "complete",
+    pinRequired: false,
+  ),
+  token: WepinToken(
+    accessToken: "access_token",
+    refreshToken: "refresh_token",
+  )
+)
+```
+
+### loginWepinWithEmailAndPassword 
+
+```dart
+await wepinLogin.loginWepinWithEmailAndPassword({required String email, required String password})
+```
+
+This method integrates the functions of `loginWithEmailAndPassword` and `loginWepin`. 
+The `loginWepinWithEmailAndPassword` method logs the user into Wepin using the provided email and password. Upon successful login, it returns Wepin user information.
+
+#### Supported Version
+Supported from version *`0.0.5`* and later.
+
+#### Parameters
+
+- `email` \<String> - The user's email address.
+- `password` \<String> - The user's password.
+
+#### Returns
+
+- Future\<WepinUser> - A Future that resolves to a WepinUser object containing the user's login status and information.
+    - status \<'success'|'fail'>  - The login status.
+    - userInfo \<WepinUserInfo> __optional__ - The user's information, including:
+        - userId \<String> - The user's ID.
+        - email \<String> - The user's email.
+        - provider \<'google'|'apple'|'naver'|'discord'|'email'|'external_token'> - The login provider.
+        - use2FA \<bool> - Whether the user uses two-factor authentication.
+    - walletId \<String> = The user's wallet ID.
+    - userStatus: \<WepinUserStatus> - The user's status of wepin login. including:
+        - loginStatus: \<'complete' | 'pinRequired' | 'registerRequired'> - If the user's loginStatus value is not complete, the user must be registered in Wepin.
+        - pinRequired?: <bool> - Whether a PIN is required.
+    - token: \<WepinToken> - The user's token of wepin.
+        - accessToken: \<String> - The access token.
+        - refreshToken \<String> - The refresh token.
+
+#### Exception
+
+- [WepinError](#WepinError)
+
+#### Example
+
+```dart
+final wepinLogin = WepinLogin(appId: 'appId', appKey: 'appKey');
+await wepinLogin.init();
+final userInfo = await wepinLogin.loginWithEmailAndPassword(
+    email: "abc@abc.com",
+    password: "user_password"
+);
+
+final userStatus = userInfo.userStatus;
+if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
+    // Wepin register
+}
+```
+
+- response
+```dart
+WepinUser(
+  status: "success",
+  userInfo: WepinUserInfo(
+    userId: "120349034824234234",
+    email: "abc@abc.com",
+    provider: "email",
     use2FA: true,
   ),
   walletId: "abcdsfsf123",
