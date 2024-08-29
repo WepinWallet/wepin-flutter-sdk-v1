@@ -19,13 +19,15 @@ flutter pub add wepin_flutter_widget_sdk
 ## 2. Update Your Code
 Change all import statements that reference `wepin_flutter` to `wepin_flutter_widget_sdk`.
 
+- Legacy Packages([wepin_flutter](https://pub.dev/packages/wepin_flutter))
 ```dart
-// Previous code
 import 'package:wepin_flutter/wepin.dart';
 import 'package:wepin_flutter/wepin_inputs.dart';
 import 'package:wepin_flutter/wepin_outputs.dart';
+```
 
-// Updated code
+- Updated Packages([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk))
+```dart
 import 'package:wepin_flutter_widget_sdk/wepin_flutter_widget_sdk.dart';
 import 'package:wepin_flutter_widget_sdk/wepin_flutter_widget_sdk_type.dart';
 ```
@@ -120,54 +122,104 @@ Replace "YOUR TEXT" with a description of why your app requires camera access.
 Only include the permissions that are necessary for your application.
 </details>
 
+### 3.3 OAuth Login Provider Setup
+If you want to use OAuth login functionality (e.g., loginWithUI), you need to set up OAuth login providers.
+To do this, you must first register your OAuth login provider information in the [Wepin Workspace](https://workspace.wepin.io/). 
+Navigate to the Login tab under the Developer Tools menu, click the Add or Set Login Provider button in the Login Provider section, and complete the registration.  
+
+![image](https://github.com/user-attachments/assets/b7a7f6d3-69a7-4ee5-ab66-bad57a715fda)
+
+
 ## 4. Major Changes
 Review the significant changes in the new SDK and modify your code accordingly. Here are some examples:
 
 ### 4.1 Initialization
-```dart
-// Previous code
-Wepin _wepin = Wepin();
-_handleDeepLink(); // Add method in your app's 'initState()' for Handing Deeplink
-WidgetAttributes widgetAttributes = WidgetAttributes('ko', 'krw');
-WepinOptions wepinOptions =
-WepinOptions(_appId, _appSdkKey, widgetAttributes);
-_wepin.initialize(context, wepinOptions)
-
-// Updated code
-WepinWidgetSDK wepinSDK = WepinWidgetSDK(wepinAppKey: wepinAppKey, wepinAppId: wepinAppId);
-await wepinSDK.init(WidgetAttributes(defaultLanguage: 'ko', defaultCurrency: 'KRW'))
-```
+- Legacy Packages([wepin_flutter](https://pub.dev/packages/wepin_flutter))
+  ```dart
+    Wepin _wepin = Wepin();
+    _handleDeepLink(); // Add method in your app's 'initState()' for Handing Deeplink
+    WidgetAttributes widgetAttributes = WidgetAttributes('ko', 'krw');
+    WepinOptions wepinOptions =
+    WepinOptions(_appId, _appSdkKey, widgetAttributes);
+    _wepin.initialize(context, wepinOptions)
+  
+    ```
+- Updated Packages([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk))
+    ```dart
+    WepinWidgetSDK wepinSDK = WepinWidgetSDK(wepinAppKey: wepinAppKey, wepinAppId: wepinAppId);
+    await wepinSDK.init(WidgetAttributes(defaultLanguage: 'ko', defaultCurrency: 'KRW'))
+    ```
 
 In the updated package([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk)), there is no need to add a method for handling deep links manually.
 
 ### 4.2 Method Calls
 Check if the method calling conventions have changed and update them if necessary.
 
-```dart
-// Previous code
-await _wepin.login();
+#### login
+- Legacy Packages([wepin_flutter](https://pub.dev/packages/wepin_flutter))
+    ```dart
+    await _wepin.login();
+    ```
 
-// Updated code
-final res = await wepinSDK.login.loginWithOauthProvider(
-    provider: "google",
-    clientId: "your-google-client-id"
-);
+- Updated Packages([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk))
+  - without UI
+    ```dart
+        final res = await wepinSDK.login.loginWithOauthProvider(
+            provider: "google",
+            clientId: "your-google-client-id"
+        );
+        
+        final sign = wepinSDK.login.getSignForLogin(privateKey: privateKey, message: res!.token);
+        LoginResult? resLogin;
+        if(provider == 'naver' || provider == 'discord') {
+          resLogin = await wepinSDK.login.loginWithAccessToken(provider: provider, accessToken: res!.token, sign: sign));
+        } else {
+          resLogin = await wepinSDK.login.loginWithIdToken(idToken: res!.token, sign: sign));
+        }
+        
+        final userInfo = await wepinSDK.login.loginWepin(resLogin);
+        final userStatus = userInfo.userStatus;
+        if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
+        // Wepin register
+          await wepinSDK.register(context);
+        }
+    ```
+  - with UI (Supported from version `0.0.4` and later.)
+     ```dart
+        // google, apple, discord, naver login
+        final res = await wepinSDK.loginWithUI(context,
+          loginProviders: [
+            {
+              provider: 'google',
+              clientId: 'google-client-id'
+            },
+            {
+              provider: 'apple',
+              clientId: 'apple-client-id'
+            },
+            {
+              provider: 'discord',
+              clientId: 'discord-client-id'
+            },
+            {
+              provider: 'naver',
+              clientId: 'naver-client-id'
+            },
+          ]);
+        
+        // only email login
+        final res = await wepinSDK.loginWithUI(context,
+          loginProviders: []);
+        
+        //with specified email address
+        final res = await wepinSDK.loginWithUI(context,
+          loginProviders: [], email: 'abc@abc.com');
+          
+        if(res.userStatus.loginStatus != "complete"){
+            final userInfo  = await wepinSDK.register(context);
+        }
+    ```
 
-final sign = wepinSDK.login.getSignForLogin(privateKey: privateKey, message: res!.token);
-LoginResult? resLogin;
-if(provider == 'naver' || provider == 'discord') {
-  resLogin = await wepinSDK.login.loginWithAccessToken(provider: provider, accessToken: res!.token, sign: sign));
-} else {
-  resLogin = await wepinSDK.login.loginWithIdToken(idToken: res!.token, sign: sign));
-}
-
-final userInfo = await wepinSDK.login.loginWepin(resLogin);
-final userStatus = userInfo.userStatus;
-if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
-// Wepin register
-  await wepinSDK.register(context);
-}
-```
 For more details on login operations, refer to the [wepin_flutter_login_lib plugin](https://pub.dev/packages/wepin_flutter_login_lib).
 The updated package ([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk)) only provides a login feature without widget UI. 
 If you need OAuth login functionality, make sure to register the OAuth provider in the [Wepin workspace](https://workspace.wepin.io).
