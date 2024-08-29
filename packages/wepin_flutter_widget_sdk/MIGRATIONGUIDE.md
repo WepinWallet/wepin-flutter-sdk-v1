@@ -61,7 +61,9 @@ android.defaultConfig.manifestPlaceholders = [
   'appAuthRedirectScheme': 'wepin.{{YOUR_WEPIN_APPID}}'
 ]
 ```
-> Note: Setting up deep links is now mandatory in the updated package.
+
+> [!NOTE]
+> Setting up deep links is now mandatory in the updated package.
 > <details>
 >  <summary>See details</summary>
 > Ensure that the custom scheme correctly matches your Wepin App ID.
@@ -163,7 +165,7 @@ Check if the method calling conventions have changed and update them if necessar
 
 - Updated Packages([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk))
   - without UI
-    For more details on login operations, refer to the [wepin_flutter_login_lib plugin](https://pub.dev/packages/wepin_flutter_login_lib).
+    > For more details on login operations, refer to the [wepin_flutter_login_lib plugin](https://pub.dev/packages/wepin_flutter_login_lib).
     ```dart
     final res = await wepinSDK.login.loginWithOauthProvider(
         provider: "google",
