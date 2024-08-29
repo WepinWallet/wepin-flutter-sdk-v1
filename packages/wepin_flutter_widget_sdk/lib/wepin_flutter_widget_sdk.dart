@@ -155,6 +155,7 @@ class WepinWidgetSDK {
   }
 
   Future<WepinUser> register(BuildContext context) async {
+    _loginUICompleter = null;
     if (!_isInitialized) {
       throw WepinError(WepinErrorCode.notInitialized);
     }
@@ -210,6 +211,38 @@ class WepinWidgetSDK {
       }
       return completer.future;
     }
+  }
+
+  Completer<WepinUser?>? _loginUICompleter;
+  List<LoginProvider>? _loginProviders;
+  String _specifiedEmail = '';
+  Future<WepinUser?> loginWithUI(BuildContext context, {required List<LoginProvider> loginProviders, String? email}) async {
+    if (!_isInitialized) {
+      throw WepinError(WepinErrorCode.notInitialized);
+    }
+    final status = await getStatus();
+    if (status == WepinLifeCycle.login || status == WepinLifeCycle.loginBeforeRegister && _userInfo != null) {
+      return _userInfo!;
+    } else {
+      if (context.mounted) {
+        _loginUICompleter = Completer<WepinUser?>();
+        _specifiedEmail = email ?? '';
+        _loginProviders = loginProviders;
+        await _open(context: context);
+        // Await the completion of the Completer
+        WepinUser? result = await _loginUICompleter!.future;
+
+        // After the Completer is completed, close the WebView
+        await closeWidget();
+        // if (_loginUICompleter!.isCompleted) {
+        //   await closeWidget();
+        // }
+        return result; // Return the result from the Completer
+      } else {
+        throw WepinError(WepinErrorCode.invalidContext);
+      }
+    }
+
   }
 
   List<WepinAccount>? _accountInfo;
@@ -442,6 +475,7 @@ class WepinWidgetSDK {
 
 
   Future<WepinSendResponse> send(BuildContext context, {required WepinAccount account, WepinTxData? txData}) async {
+    _loginUICompleter = null;
     if (!_isInitialized) {
       throw WepinError(WepinErrorCode.notInitialized);
     }
@@ -515,7 +549,76 @@ class WepinWidgetSDK {
     return completer.future;
   }
 
+  Future<WepinReceiveResponse> receive(BuildContext context, {required WepinAccount account}) async {
+    if (!_isInitialized) {
+      throw WepinError(WepinErrorCode.notInitialized);
+    }
+    if (await getStatus() != WepinLifeCycle.login && _userInfo == null) {
+      throw WepinError(WepinErrorCode.incorrectLifecycleException, 'The LifeCycle of wepin SDK has to be login');
+    }
+
+    await getAccounts();
+
+    if (_detailAccounts == null || _detailAccounts!.isEmpty) {
+      throw WepinError(WepinErrorCode.accountNotFound, 'Account list is empty');
+    }
+
+    final filteredAccounts = _detailAccounts!.where((dAccount) =>
+    account.network == dAccount.network &&
+        account.address == dAccount.address &&
+        dAccount.contract == null
+    );
+
+    if (filteredAccounts.isEmpty) {
+      throw WepinError(WepinErrorCode.accountNotFound, 'No accounts found');
+    }
+
+    final id = DateTime.now().millisecondsSinceEpoch;
+    _currentWepinRequest = {
+      'header': {
+        'request_from': 'flutter',
+        'request_to': 'wepin_widget',
+        'id': id,
+      },
+      'body': {
+        'command': 'receive_account',
+        'parameter': {
+          'account': {
+            'address': account.address,
+            'network': account.network,
+            'contract': account.contract,
+          },
+        },
+      },
+    };
+    final completer = Completer<WepinReceiveResponse>();
+    _responseEvent[id] = (JSResponse response) async {
+      closeWidget();
+      await _checkLoginStatusAndSetLifecycle();
+      _currentWepinRequest = null;
+      _responseEvent.remove(id);
+      if (response.body.state == 'SUCCESS') {
+        completer.complete(WepinReceiveResponse(account: account));
+      } else {
+        if(response.body.data == 'User Cancel'){
+          completer.complete(WepinReceiveResponse(account: account));
+          return;
+        }
+        completer.completeError(
+            WepinError(WepinErrorCode.failedSend, '${response.body.data}'));
+      }
+      return null;
+    };
+    if (context.mounted) {
+      await _open(context: context);
+    }else {
+      completer.completeError(WepinError(WepinErrorCode.invalidContext));
+    }
+    return completer.future;
+  }
+
   Future<void> openWidget(BuildContext context) async {
+    _loginUICompleter = null;
     if (!_isInitialized) {
       throw WepinError(WepinErrorCode.notInitialized);
     }
@@ -552,10 +655,11 @@ class WepinWidgetSDK {
     _requestEvent['ready_to_widget'] =
       (JSRequest request, JSResponse response) async {
         final data = await _wepinSessionManager?.wepinStorage.getAllLocalStorage();
-
+        List<String>? providers = _loginProviders?.map((e) => e.provider).toList();
+        // provider list가 없으면 이메일 로그인만 가능하도록하기 위해 빈배열로 해야줘야 함!
         ResponseReadyToWidget readyToWidgetData = ResponseReadyToWidget(
             _wepinAppKey,
-            wepinAttribute,
+            WidgetWebivewAttributes.convertAttributes(wepinAttribute, loginProviders: providers?? []),
             domain!,
             Platform.isIOS? 3 : 2,
             version!,
@@ -576,7 +680,7 @@ class WepinWidgetSDK {
 
     _requestEvent['set_user_email'] =
       (JSRequest request, JSResponse response) async {
-        response.body.data = {'email': null };
+        response.body.data = {'email': _specifiedEmail };
         return jsonEncode(response.toJson());
       };
 
@@ -584,6 +688,12 @@ class WepinWidgetSDK {
       (JSRequest request, JSResponse response) async {
         final data = request.body.parameter['data'];
         await _wepinSessionManager?.wepinStorage.setAllLocalStorage(data);
+        if( data['user_info'] != null ) {
+          await getStatus();
+          if(_loginUICompleter != null && !(_loginUICompleter!.isCompleted)){
+            _loginUICompleter?.complete(_userInfo);
+          }
+        }
         return jsonEncode(response.toJson());
       };
 
@@ -599,6 +709,28 @@ class WepinWidgetSDK {
         response.body.data = data?.text ?? '';
         return jsonEncode(response.toJson());
       };
+
+    _requestEvent['get_login_info'] =
+        (JSRequest request, JSResponse response) async {
+        final provider = request.body.parameter['provider'];
+        // Create a map for efficient lookup
+        Map<String, String> providerToClientIdMap = {
+          for (var provider in _loginProviders!) provider.provider: provider.clientId
+        };
+
+        // Function to find clientId by provider
+        String? findClientIdByProvider(String provider) {
+          return providerToClientIdMap[provider];
+        }
+        try{
+          final res = await login.loginFirebaseWithOauthProvider(provider: provider, clientId: findClientIdByProvider(provider)!);
+          response.body.data = res ?? 'failed login';
+        }catch(e) {
+          response.body.data = {'error': '$e'};
+        }
+
+        return jsonEncode(response.toJson());
+    };
 
     _responseEvent.clear();
   }

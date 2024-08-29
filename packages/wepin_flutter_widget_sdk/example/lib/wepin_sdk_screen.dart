@@ -26,6 +26,7 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
   WepinWidgetSDK? wepinSDK;
   String? selectedLanguage = 'ko';
   String? selectedValue = sdkConfigs[0]['name'];
+
   WepinLifeCycle wepinStatus = WepinLifeCycle.notInitialized;
   String userEmail = '';
   List<WepinAccount> selectedAccounts = [];
@@ -34,10 +35,9 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
   List<WepinNFT> nftList = [];
   bool isLoading = false;
   String? privateKey;
-  String? googleClientId;
-  String? discordClientId;
-  String? appleClientId;
-  String? naverClientId;
+  List<LoginProvider> loginProviders = sdkConfigs[0]['loginProviders'];
+  List<LoginProvider> selectedSocialLogins = sdkConfigs[0]['loginProviders'];
+
 
   @override
   void initState() {
@@ -51,13 +51,11 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
     initWepinSDK(selectedConfig['appId']!, selectedConfig['appKey']!, selectedConfig['privateKey']!);
   }
 
-  void _updateConfig(Map<String, String> config) {
+  void _updateConfig(Map<String, dynamic> config) {
     setState(() {
       privateKey = config['privateKey'];
-      googleClientId = config['googleClientId'];
-      discordClientId = config['discordClientId'];
-      appleClientId = config['appleClientId'];
-      naverClientId = config['naverClientId'];
+      loginProviders = config['loginProviders'];
+      selectedSocialLogins = config['loginProviders'];
     });
   }
 
@@ -213,6 +211,43 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
     }
   }
 
+  Future<void> _loginWithUI({String? email}) async {
+    try {
+      final loginRes = await wepinSDK!.loginWithUI(
+        context,  // Assuming context is available or refactor to avoid its usage
+        loginProviders: selectedSocialLogins,
+        email: email
+      );
+
+      userEmail = loginRes!.userInfo!.email;
+      getStatus();
+      showSuccess('loginWithUI completed', '$loginRes');
+    } catch (e) {
+      showError(e.toString());
+    }
+  }
+
+  Future<void> _receiveAccount() async {
+    try {
+      final sendRes = await wepinSDK!.receive(
+        context,  // Assuming context is available or refactor to avoid its usage
+        account: selectedAccounts[0],
+      );
+      wepinStatus = await wepinSDK!.getStatus();
+      showSuccess('Receive completed', '$sendRes');
+    } catch (e) {
+      showError(e.toString());
+    }
+  }
+
+  // Function to find clientId by provider
+  String? findClientIdByProvider(String provider) {
+    Map<String, String> providerToClientIdMap = {
+      for (var provider in loginProviders) provider.provider: provider.clientId
+    };
+    return providerToClientIdMap[provider];
+  }
+
   Widget _buildActionButton(String label, VoidCallback onPressed) {
     return Container(
       width: double.infinity,
@@ -263,10 +298,19 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
                   child: ListView(
                     children: [
                       if (wepinStatus == WepinLifeCycle.initialized) ...[
-                        _buildActionButton('Login with Google', () => loginWithProvider('google', googleClientId)),
-                        _buildActionButton('Login with Apple', () => loginWithProvider('apple', appleClientId)),
-                        _buildActionButton('Login with Discord', () => loginWithProvider('discord', discordClientId)),
-                        _buildActionButton('Login with Naver', () => loginWithProvider('naver', naverClientId)),
+                        _buildActionButton('Login With UI', () async {
+                            await _loginWithUI();
+                        }),
+                        _buildActionButton('Login With UI(specified Email)', () {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => EmailLoginDialog(requirePassword: false, onLogin: _loginWithUI),
+                          );
+                        }),
+                        _buildActionButton('Login with Google', () => loginWithProvider('google', findClientIdByProvider('google'))),
+                        _buildActionButton('Login with Apple', () => loginWithProvider('apple', findClientIdByProvider('apple'))),
+                        _buildActionButton('Login with Discord', () => loginWithProvider('discord', findClientIdByProvider('discord'))),
+                        _buildActionButton('Login with Naver', () => loginWithProvider('naver', findClientIdByProvider('naver'))),
                         _buildActionButton('SignUp with Email', () {
                           showDialog(
                             context: context,
@@ -305,6 +349,13 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
                         }),
                         if (accountsList.isNotEmpty) ...[
                           _buildActionButton('Account List View', () => navigateToAccountSelection(selection: false)),
+                          _buildActionButton('Receive', () async {
+                            await navigateToAccountSelection(selection: true, allowMultiSelection: false, withoutToken: false);
+                            if(context.mounted && selectedAccounts.isNotEmpty) {
+                              await _receiveAccount();
+                            }
+                          }),
+
                           _buildActionButton('Get Balance', () async {
                             await navigateToAccountSelection(selection: true, allowMultiSelection: true, withoutToken: true);
                             if(selectedAccounts.isNotEmpty) {
@@ -331,6 +382,7 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
                             await wepinSDK!.login.logoutWepin();
                             selectedAccounts = [];
                             accountsList = [];
+                            userEmail = '';
                             wepinStatus = await wepinSDK!.getStatus();
                           });
                         }),
@@ -386,6 +438,14 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
             }
           });
         },
+        socialLogins: loginProviders, // List of social logins
+        selectedSocialLogins: selectedSocialLogins, // Initially selected social logins
+        onSocialLoginsChanged: (selectedLogins) {
+          setState(() {
+            selectedSocialLogins = selectedLogins;
+            print('Selected social logins: $selectedLogins');
+          });
+        }, // Handle changes
       ),
     );
   }

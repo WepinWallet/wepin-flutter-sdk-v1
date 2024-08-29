@@ -52,9 +52,9 @@ flutter pub add wepin_flutter_widget_sdk
 
 ### Config Deep Link
 
-To enable OAuth login functionality (`login.loginWithOauthProvider`), you need to configure the Deep Link Scheme.
+The Deep Link configuration is required for logging into Wepin. Setting up the Deep Link Scheme allows your app to handle external URL calls.
 
-Deep Link scheme format : `wepin. + Your Wepin App ID`
+The format for the Deep Link scheme is `wepin. + Your Wepin App ID`
 
 #### Android
 
@@ -133,6 +133,15 @@ Add the below line in your app's `AndroidMainfest.xml` file
 </dict>
 </plist>
 ```
+
+### OAuth Login Provider Setup
+
+If you want to use OAuth login functionality (e.g., loginWithUI), you need to set up OAuth login providers.
+To do this, you must first register your OAuth login provider information in the [Wepin Workspace](https://workspace.wepin.io/). 
+Navigate to the Login tab under the Developer Tools menu, click the Add or Set Login Provider button in the Login Provider section, and complete the registration.  
+
+![image](https://github.com/user-attachments/assets/b7a7f6d3-69a7-4ee5-ab66-bad57a715fda)
+
 
 ## ⏩ Import SDK
 
@@ -240,6 +249,11 @@ The `login` variable is a Wepin login library that includes various authenticati
 - `loginWithIdToken`
 - `loginWithAccessToken`
 - `getRefreshFirebaseToken`
+- `loginFirebaseWithOauthProvider`
+- `loginWepinWithOauthProvider`
+- `loginWepinWithIdToken`
+- `loginWepinWithAccessToken`
+- `loginWepinWithEmailAndPassword`
 - `loginWepin`
 - `getCurrentWepinUser`
 - `logout`
@@ -273,12 +287,85 @@ await wepinSDK.login.logout();
 
 For more details on each method and to see usage examples, please visit the official  [wepin_flutter_login_lib documentation](https://pub.dev/packages/wepin_flutter_login_lib).
 
+### loginWithUI
+```dart
+await wepinSDK.loginWithUI(BuildContext context, {required List<LoginProvider> loginProviders, String? email})
+```
+The loginWithUI() method provides the functionality to log in using a widget and returns the information of the logged-in user. If a user is already logged in, the widget will not be displayed, and the method will directly return the logged-in user's information. To perform a login without the widget, use the loginWepin() method from the login variable instead.
+
+> [!CAUTION]
+> This method can only be used after the authentication key has been deleted from the [Wepin Workspace](https://workspace.wepin.io/).
+> (Wepin Workspace > Development Tools menu > Login tab > Auth Key > Delete)
+> > * The Auth Key menu is visible only if an authentication key was previously generated.
+
+#### Supported Version
+Supported from version *`0.0.4`* and later.
+
+#### Parameters
+- context \<BuildContext> - The `BuildContext` parameter is essential in Flutter as it represents the location of a widget in the widget tree. This context is used by Flutter to locate the widget's position in the tree and to provide various functions like navigation, accessing theme data, and more. When you call `loginWithUI`, you pass the current context to ensure that the widget is displayed within the correct part of the UI hierarchy.
+- loginProviders \<List\<LoginProvider>> - An array of login providers to configure the widget. If an empty array is provided, only the email login function is available.
+  - provider \<String> - The OAuth login provider (e.g., 'google', 'naver', 'discord', 'apple').
+  - clientId \<String> - The client ID of the OAuth login provider.
+- email \<String> - __optional__ The email parameter allows users to log in using the specified email address when logging in through the widget.
+
+> [!NOTE]
+> For details on setting up OAuth providers, refer to the [OAuth Login Provider Setup section](#oauth-login-provider-setup).
+
+#### Returns
+- Future\<WepinUser>
+  - status \<'success'|'fail'>
+  - userInfo \<WepinUserInfo> __optional__
+    - userId \<String>
+    - email \<String>
+    - provider \<'google'|'apple'|'naver'|'discord'|'email'|'external_token'>
+    - use2FA \<bool>
+  - userStatus: \<WepinUserStatus> - The user's status in Wepin login, including:
+    - loginStatus: \<'complete' | 'pinRequired' | 'registerRequired'> - If the user's `loginStatus` value is not complete, registration in Wepin is required.
+    - pinRequired?: <bool> 
+  - walletId \<String> __optional__
+  - token \<WepinToken> - Wepin Token
+
+#### Exception
+- [WepinError](#WepinError)
+
+#### Example
+```dart
+// google, apple, discord, naver login
+final userInfo = await wepinSDK.loginWithUI(context,
+  loginProviders: [
+    {
+      provider: 'google',
+      clientId: 'google-client-id'
+    },
+    {
+      provider: 'apple',
+      clientId: 'apple-client-id'
+    },
+    {
+      provider: 'discord',
+      clientId: 'discord-client-id'
+    },
+    {
+      provider: 'naver',
+      clientId: 'naver-client-id'
+    },
+  ]);
+
+// only email login
+final userInfo = await wepinSDK.loginWithUI(context,
+  loginProviders: []);
+
+//with specified email address
+final userInfo = await wepinSDK.loginWithUI(context,
+  loginProviders: [], email: 'abc@abc.com');
+```
+
 ### openWidget
 ```dart
 await wepinSDK.openWidget(BuildContext context)
 ```
 
-The `openWidget()` method displays the Wepin widget. If a user is not logged in, the widget will not open. Therefore, you must log in to Wepin before using this method. To log in to Wepin, use the `loginWepin` method from the `login` variable.
+The `openWidget()` method displays the Wepin widget. If a user is not logged in, the widget will not open. Therefore, you must log in to Wepin before using this method. To log in to Wepin, use the `loginWithUI` method or `loginWepin` method from the `login` variable.
 
 #### Parameters
 - context \<BuildContext> - The `BuildContext` parameter is essential in Flutter as it represents the location of a widget in the widget tree. This context is used by Flutter to locate the widget's position in the tree and to provide various functions like navigation, accessing theme data, and more. When you call `openWidget`, you pass the current context to ensure that the widget is displayed within the correct part of the UI hierarchy.
@@ -576,6 +663,64 @@ WepinSendResponse(
     txId: "0x76bafd4b700ed959999d08ab76f95d7b6ab2249c0446921c62a6336a70b84f32"
 )
 ```
+
+### receive
+```dart
+await wepinSDK.receive(BuildContext context, {required WepinAccount account})
+```
+
+The `receive` method opens the account information page associated with the specified account. This method can only be used after logging into Wepin.
+
+#### Supported Version
+Supported from version *`0.0.4`* and later.
+
+#### Parameters
+- context \<BuildContext> -  The `BuildContext` parameter is essential in Flutter as it represents the location of a widget in the widget tree. This context is used by Flutter to locate the widget's position in the tree and to provide various functions like navigation, accessing theme data, and more. When you call `receive`, you pass the current context to ensure that the widget is displayed within the correct part of the UI hierarchy.
+- account \<WepinAccount> - Provides the account information for the page that will be opened.
+  - network \<String> - The network associated with the account.
+  - address \<String>  - The address of the account.
+  - contract \<String> __optional__ The contract address of the token.
+
+#### Returns
+- Future \<WepinReceiveResponse> - A future that resolves to a `WepinReceiveResponse` object containing the information about the opened account.
+  - account \<WepinAccount> - The account information of the page that was opened.
+    - network \<String> - The network associated with the account.
+    - address \<String>  - The address of the account.
+    - contract \<String> __optional__ The contract address of the token. 
+
+#### Exception
+- [WepinError](#WepinError)
+
+#### Example
+```dart
+// Opening an account page
+final result = await wepinSDK.receive(context, {
+    account: WepinAccount(
+      address: '0x0000001111112222223333334444445555556666',
+      network: 'Ethereum',
+    ),
+})
+
+// Opening a token page
+final result = await wepinSDK.receive(context, {
+  account: WepinAccount(
+    address: '0x0000001111112222223333334444445555556666',
+    network: 'Ethereum',
+    contract: '0x9999991111112222223333334444445555556666'
+  ),
+})
+```
+- response
+```dart
+WepinReceiveResponse(
+    account: WepinAccount(
+      address: '0x0000001111112222223333334444445555556666',
+      network: 'Ethereum',
+      contract: '0x9999991111112222223333334444445555556666'
+  )
+)
+```
+
 
 ### finalize
 ```dart

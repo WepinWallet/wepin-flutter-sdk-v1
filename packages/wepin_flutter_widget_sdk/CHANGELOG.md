@@ -1,5 +1,9 @@
-## 0.0.3
+## 0.0.4
+### New Feature
+- Added the `receive` method.
+- Added the `loginWithUI` method.
 
+## 0.0.3
 ### Changed
 - Removed the `decimal` package import.
 
@@ -11,7 +15,6 @@
 
 
 ## 0.0.2
-
 ### Update
   - Minimum required `dart` version updated to v2.18.3.
   - Minimum required `flutter` version updated to v3.3.0.
@@ -22,5 +25,4 @@
   - Updated `wepin_flutter_login` package to v0.0.3
 
 ## 0.0.1
-
 * Initial release of `wepin_flutter_widget_sdk`.

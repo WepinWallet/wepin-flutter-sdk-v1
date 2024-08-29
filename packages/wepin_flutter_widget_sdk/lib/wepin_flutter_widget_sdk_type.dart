@@ -304,6 +304,31 @@ class WepinSendResponse {
   }
 }
 
+class WepinReceiveResponse {
+  final WepinAccount account;
+
+  WepinReceiveResponse({
+    required this.account,
+  });
+
+  factory WepinReceiveResponse.fromJson(Map<String, dynamic> json) {
+    return WepinReceiveResponse(
+      account: WepinAccount.fromJson(json['account']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'account': account.toJson(),
+    };
+  }
+
+  @override
+  String toString() {
+    return 'WepinReceiveResponse(account: $account)';
+  }
+}
+
 
 enum WepinLifeCycle {
   notInitialized, // 'not_initialized'
@@ -349,5 +374,31 @@ extension WepinLifeCycleExtension on WepinLifeCycle {
       default:
         throw ArgumentError('Invalid WepinLifeCycle value');
     }
+  }
+}
+
+class LoginProvider {
+  final String provider;
+  final String clientId;
+
+  LoginProvider({required this.provider, required this.clientId});
+
+  factory LoginProvider.fromJson(Map<String, dynamic> json) {
+    return LoginProvider(
+      provider: json['provider'],
+      clientId: json['clientId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'provider': provider,
+      'clientId': clientId
+    };
+  }
+
+  @override
+  String toString() {
+    return 'LoginProvider(provider: $provider, clientId: $clientId)';
   }
 }
