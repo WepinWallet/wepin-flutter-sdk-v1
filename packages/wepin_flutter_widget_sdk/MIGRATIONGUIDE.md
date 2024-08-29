@@ -163,66 +163,63 @@ Check if the method calling conventions have changed and update them if necessar
 
 - Updated Packages([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk))
   - without UI
+    For more details on login operations, refer to the [wepin_flutter_login_lib plugin](https://pub.dev/packages/wepin_flutter_login_lib).
     ```dart
-        final res = await wepinSDK.login.loginWithOauthProvider(
-            provider: "google",
-            clientId: "your-google-client-id"
-        );
-        
-        final sign = wepinSDK.login.getSignForLogin(privateKey: privateKey, message: res!.token);
-        LoginResult? resLogin;
-        if(provider == 'naver' || provider == 'discord') {
-          resLogin = await wepinSDK.login.loginWithAccessToken(provider: provider, accessToken: res!.token, sign: sign));
-        } else {
-          resLogin = await wepinSDK.login.loginWithIdToken(idToken: res!.token, sign: sign));
-        }
-        
-        final userInfo = await wepinSDK.login.loginWepin(resLogin);
-        final userStatus = userInfo.userStatus;
-        if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
-        // Wepin register
-          await wepinSDK.register(context);
-        }
+    final res = await wepinSDK.login.loginWithOauthProvider(
+        provider: "google",
+        clientId: "your-google-client-id"
+    );
+    
+    final sign = wepinSDK.login.getSignForLogin(privateKey: privateKey, message: res!.token);
+    LoginResult? resLogin;
+    if(provider == 'naver' || provider == 'discord') {
+      resLogin = await wepinSDK.login.loginWithAccessToken(provider: provider, accessToken: res!.token, sign: sign));
+    } else {
+      resLogin = await wepinSDK.login.loginWithIdToken(idToken: res!.token, sign: sign));
+    }
+    
+    final userInfo = await wepinSDK.login.loginWepin(resLogin);
+    final userStatus = userInfo.userStatus;
+    if (userStatus.loginStatus == 'pinRequired' || userStatus.loginStatus == 'registerRequired') {
+    // Wepin register
+      await wepinSDK.register(context);
+    }
     ```
   - with UI (Supported from version `0.0.4` and later.)
      ```dart
-        // google, apple, discord, naver login
-        final res = await wepinSDK.loginWithUI(context,
-          loginProviders: [
-            {
-              provider: 'google',
-              clientId: 'google-client-id'
-            },
-            {
-              provider: 'apple',
-              clientId: 'apple-client-id'
-            },
-            {
-              provider: 'discord',
-              clientId: 'discord-client-id'
-            },
-            {
-              provider: 'naver',
-              clientId: 'naver-client-id'
-            },
-          ]);
-        
-        // only email login
-        final res = await wepinSDK.loginWithUI(context,
-          loginProviders: []);
-        
-        //with specified email address
-        final res = await wepinSDK.loginWithUI(context,
-          loginProviders: [], email: 'abc@abc.com');
-          
-        if(res.userStatus.loginStatus != "complete"){
-            final userInfo  = await wepinSDK.register(context);
-        }
+    // google, apple, discord, naver login
+    final res = await wepinSDK.loginWithUI(context,
+      loginProviders: [
+        {
+          provider: 'google',
+          clientId: 'google-client-id'
+        },
+        {
+          provider: 'apple',
+          clientId: 'apple-client-id'
+        },
+        {
+          provider: 'discord',
+          clientId: 'discord-client-id'
+        },
+        {
+          provider: 'naver',
+          clientId: 'naver-client-id'
+        },
+      ]);
+    
+    // only email login
+    final res = await wepinSDK.loginWithUI(context,
+      loginProviders: []);
+    
+    //with specified email address
+    final res = await wepinSDK.loginWithUI(context,
+      loginProviders: [], email: 'abc@abc.com');
+      
+    if(res.userStatus.loginStatus != "complete"){
+        final userInfo  = await wepinSDK.register(context);
+    }
     ```
-
-For more details on login operations, refer to the [wepin_flutter_login_lib plugin](https://pub.dev/packages/wepin_flutter_login_lib).
-The updated package ([wepin_flutter_widget_sdk](https://pub.dev/packages/wepin_flutter_widget_sdk)) only provides a login feature without widget UI. 
-If you need OAuth login functionality, make sure to register the OAuth provider in the [Wepin workspace](https://workspace.wepin.io).
 
 ## 5. Testing
 Once you have completed all the code changes, test your application to ensure all features are working correctly. Pay special attention to key functionalities such as login, logout, and fetching data.
