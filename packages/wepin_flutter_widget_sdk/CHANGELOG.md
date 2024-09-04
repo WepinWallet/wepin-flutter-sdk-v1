@@ -1,3 +1,8 @@
+## 0.0.5
+###  Update
+- Updated `wepin_flutter_login` package to v0.0.6
+  - Fixed `SFAuthenticationViewController` Deallocation Issue:
+
 ## 0.0.4
 ### New Feature
 - Added the `receive` method.

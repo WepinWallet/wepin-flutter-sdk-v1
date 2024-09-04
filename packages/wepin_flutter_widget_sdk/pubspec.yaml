@@ -1,7 +1,7 @@
 name: wepin_flutter_widget_sdk
 description: >
   A Flutter package for integrating the Wepin Widget SDK, enabling smooth implementation of advanced widget features.
-version: 0.0.4
+version: 0.0.5
 homepage: https://www.wepin.io
 repository: https://github.com/WepinWallet/wepin-flutter-sdk-v1
 
@@ -22,7 +22,7 @@ dependencies:
   wepin_flutter_storage: ^0.0.4
   wepin_flutter_network: ^0.0.5
   wepin_flutter_modal: ^0.0.3
-  wepin_flutter_login_lib: ^0.0.5
+  wepin_flutter_login_lib: ^0.0.6
 
 dev_dependencies:
   flutter_test:
