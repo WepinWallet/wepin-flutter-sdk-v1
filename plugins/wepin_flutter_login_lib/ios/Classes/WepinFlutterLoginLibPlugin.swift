@@ -13,6 +13,7 @@ public class WepinFlutterLoginLibPlugin: NSObject, FlutterPlugin {
     private var flutterAppAuthTaskId: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier.invalid
     private static let kStateSizeBytes = 32
     private static let kCodeVerifierBytes = 32
+    private var authSession: ASWebAuthenticationSession?
     
     func currentViewController() -> UIViewController? {
        return UIApplication.shared.delegate?.window??.rootViewController?.presentedViewController ?? UIApplication.shared.delegate?.window??.rootViewController
@@ -129,17 +130,21 @@ public class WepinFlutterLoginLibPlugin: NSObject, FlutterPlugin {
        weak var weakSelf = self
 
         flutterAppAuthTaskId = UIApplication.shared.beginBackgroundTask {
-           UIApplication.shared.endBackgroundTask(self.flutterAppAuthTaskId)
-           self.flutterAppAuthTaskId = UIBackgroundTaskIdentifier.invalid
-       }
+            if self.flutterAppAuthTaskId != UIBackgroundTaskIdentifier.invalid {
+                UIApplication.shared.endBackgroundTask(self.flutterAppAuthTaskId)
+                self.flutterAppAuthTaskId = UIBackgroundTaskIdentifier.invalid
+            }
+        }
 
        let presentingViewController = currentViewController()
 
        let callback: OIDAuthorizationCallback = { authorizationResponse, error in
            guard let strongSelf = weakSelf else { return }
            strongSelf.currentSession = nil
-           UIApplication.shared.endBackgroundTask(strongSelf.flutterAppAuthTaskId)
-           strongSelf.flutterAppAuthTaskId = UIBackgroundTaskIdentifier.invalid
+           if strongSelf.flutterAppAuthTaskId != UIBackgroundTaskIdentifier.invalid {
+               UIApplication.shared.endBackgroundTask(strongSelf.flutterAppAuthTaskId)
+               strongSelf.flutterAppAuthTaskId = UIBackgroundTaskIdentifier.invalid
+           }
            if let authorizationResponse = authorizationResponse {
                result(self.formatAuthorizationResponse(authorizationResponse, withCodeVerifier: codeVerifier))
            } else {
@@ -150,8 +155,10 @@ public class WepinFlutterLoginLibPlugin: NSObject, FlutterPlugin {
        let tokenCallback: OIDTokenCallback = { authState, error in
            guard let strongSelf = weakSelf else { return }
            strongSelf.currentSession = nil
-           UIApplication.shared.endBackgroundTask(strongSelf.flutterAppAuthTaskId)
-           strongSelf.flutterAppAuthTaskId = UIBackgroundTaskIdentifier.invalid
+           if strongSelf.flutterAppAuthTaskId != UIBackgroundTaskIdentifier.invalid {
+               UIApplication.shared.endBackgroundTask(strongSelf.flutterAppAuthTaskId)
+               strongSelf.flutterAppAuthTaskId = UIBackgroundTaskIdentifier.invalid
+           }
            if let authState = authState {
                result(self.formatResponse(authState))
            } else {
@@ -161,9 +168,16 @@ public class WepinFlutterLoginLibPlugin: NSObject, FlutterPlugin {
        }
 
        let presentationContextProvider = WepinPresentationContextProvider(window: presentingViewController!.view.window)
-       let authSession = ASWebAuthenticationSession(url: request.externalUserAgentRequestURL(),
+       self.authSession = ASWebAuthenticationSession(url: request.externalUserAgentRequestURL(),
                                                      callbackURLScheme:  "wepin.\(wepinAppId)") { callbackURL, error in
-           
+
+           guard let strongSelf = weakSelf else { return }
+           strongSelf.currentSession = nil
+           if strongSelf.flutterAppAuthTaskId != UIBackgroundTaskIdentifier.invalid {
+               UIApplication.shared.endBackgroundTask(strongSelf.flutterAppAuthTaskId)
+               strongSelf.flutterAppAuthTaskId = UIBackgroundTaskIdentifier.invalid
+           }
+
            if let callbackURL = callbackURL {
                // Handle the callback URL and process the authentication response
                let authResponse = OIDAuthorizationResponse(request: request, parameters: OIDURLQueryComponent(url: callbackURL)!.dictionaryValue)
@@ -194,19 +208,21 @@ public class WepinFlutterLoginLibPlugin: NSObject, FlutterPlugin {
                }
                
            } else if let error = error {
-               guard let strongSelf = weakSelf else { return }
-               strongSelf.currentSession = nil
+//               guard let strongSelf = weakSelf else { return }
+//               strongSelf.currentSession = nil
                result(FlutterError(code: self.getErrorCode(error as NSError, defaultCode: "authentication_failed"),
                                    message: self.getErrorMessage(error as NSError), details: nil))
            } else {
-               guard let strongSelf = weakSelf else { return }
-               strongSelf.currentSession = nil
+//               guard let strongSelf = weakSelf else { return }
+//               strongSelf.currentSession = nil
                result(FlutterError(code: "authentication_failed", message: "unknown", details: nil))
            }
+
+           strongSelf.authSession = nil
        }
            
-       authSession.presentationContextProvider = presentationContextProvider
-       authSession.start()
+        self.authSession?.presentationContextProvider = presentationContextProvider
+        self.authSession?.start()
     }
     
     /*

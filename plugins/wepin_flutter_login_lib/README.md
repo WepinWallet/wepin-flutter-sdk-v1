@@ -56,7 +56,7 @@ Add the `wepin_flutter_login_lib` dependency in your pubspec.yaml file:
 
 ```yaml
 dependencies:
-  wepin_flutter_login_lib: ^0.0.5
+  wepin_flutter_login_lib: ^0.0.6
 ```
 or run the following command:
 

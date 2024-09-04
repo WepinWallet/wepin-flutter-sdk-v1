@@ -1,7 +1,7 @@
 name: wepin_flutter_login_lib
 description: >
   A Flutter plugin for integrating Wepin Login, enabling seamless social and email-based authentication.
-version: 0.0.5
+version: 0.0.6
 homepage: https://www.wepin.io
 repository: https://github.com/WepinWallet/wepin-flutter-sdk-v1
 

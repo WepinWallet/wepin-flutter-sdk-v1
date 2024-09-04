@@ -1,3 +1,10 @@
+## 0.0.6
+
+### Bug Fixes
+- Fixed `SFAuthenticationViewController` Deallocation Issue:
+  - Resolved the error caused by premature deallocation of `SFAuthenticationViewController` during the authentication flow.
+
+
 ## 0.0.5
 
 ### Update
