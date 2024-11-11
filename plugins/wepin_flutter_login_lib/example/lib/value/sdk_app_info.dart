@@ -7,3 +7,5 @@ String googleClientId = 'googleClientId';
 String appleClientId = 'appleClientId';
 String naverClientId = 'naverClientId';
 String discordClientId = 'discordClientId';
+String lineClientId = 'lineClientId';
+String facebookClientId = 'facebookClientId';

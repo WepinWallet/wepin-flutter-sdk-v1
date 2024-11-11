@@ -1,3 +1,11 @@
+## 0.0.7
+
+### Update
+ - Added AppAuth login support for LINE and Facebook.
+
+### Bug Fixes
+ - Added implementation 'androidx.appcompat:appcompat:1.6.1' to resolve compatibility issues.
+
 ## 0.0.6
 
 ### Bug Fixes

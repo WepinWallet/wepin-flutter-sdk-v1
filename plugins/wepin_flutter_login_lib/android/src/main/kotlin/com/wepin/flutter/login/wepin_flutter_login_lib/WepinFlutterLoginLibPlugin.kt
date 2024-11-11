@@ -310,6 +310,9 @@ class WepinFlutterLoginLibPlugin: FlutterPlugin, MethodCallHandler, PluginRegist
           currentResult?.error("authentication_error", "Data intent is null", null)
           return true
         }
+//        val EXTRA_RESPONSE = "net.openid.appauth.AuthorizationResponse"
+//        val res = data?.getStringExtra(EXTRA_RESPONSE)
+//        Log.d("test2 response", res!!)
         val response: AuthorizationResponse? = AuthorizationResponse.fromIntent(data)
         val ex: AuthorizationException? = AuthorizationException.fromIntent(data)
         if (ex != null) {

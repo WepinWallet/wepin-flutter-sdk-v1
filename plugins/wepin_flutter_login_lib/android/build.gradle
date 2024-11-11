@@ -29,7 +29,7 @@ android {
         namespace 'com.wepin.flutter.login.wepin_flutter_login_lib'
     }
 
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -56,6 +56,7 @@ android {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
         implementation 'net.openid:appauth:0.11.1'
+        implementation 'androidx.appcompat:appcompat:1.6.1'
     }
 
     testOptions {

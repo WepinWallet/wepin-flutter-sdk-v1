@@ -88,10 +88,17 @@ class WepinLogin {
         additionalParameters['response_mode'] = 'form_post';
       }
 
+      final scopes = provider == 'discord' ? ['identify', 'email'] : ['email'];
+      if(provider == 'line') {
+        scopes.add('profile');
+        scopes.add('openid');
+      } else if(provider == 'facebook') {
+        scopes.add('public_profile');
+      }
       final config = AuthConfiguration(
           wepinAppId,
           clientId,
-          provider == 'discord' ? ['identify', 'email'] : ['email'],
+          scopes,
           '${getWepinSdkUrl(_wepinAppKey)['sdkBackend']}user/oauth/callback?uri=${Uri
               .encodeComponent('wepin.$wepinAppId:/oauth2redirect')
               .toString()}',
@@ -125,7 +132,7 @@ class WepinLogin {
         if (tokenResponse == null) {
           throw WepinError(WepinErrorCode.invalidToken);
         }
-        return provider == 'naver' ? LoginOauthResult(
+        return provider == 'naver' || provider == 'facebook'? LoginOauthResult(
             provider: provider,
             type: WepinOauthTokenType.accessToken,
             token: tokenResponse.accessToken

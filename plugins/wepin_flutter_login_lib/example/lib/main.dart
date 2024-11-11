@@ -18,13 +18,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isBusy = false;
-  // String wepinAppId = 'wepinAppId';
-  // String wepinAppKey = Platform.isIOS? 'wepinAppKey_ios' : 'wepinAppKey_android';
-  // String privateKey = 'privateKey';
-  // String googleClientId = 'googleClientId';
-  // String appleClientId = 'appleClientId';
-  // String naverClientId = 'naverClientId';
-  // String discordClientId = 'discordClientId';
   WepinLogin? wepinLogin;
   LoginResult? loginResult;
   String testIdToken = 'idToken';
@@ -36,6 +29,8 @@ class _MyAppState extends State<MyApp> {
     'loginWithOauthProvider(apple)',
     'loginWithOauthProvider(naver)',
     'loginWithOauthProvider(discord)',
+    'loginWithOauthProvider(line)',
+    'loginWithOauthProvider(facebook)',
     'signUpWithEmailAndPassword',
     'loginWithEmailAndPassword',
     'loginWithIdToken',
@@ -47,10 +42,14 @@ class _MyAppState extends State<MyApp> {
     'loginFirebaseWithOauthProvider(apple)',
     'loginFirebaseWithOauthProvider(naver)',
     'loginFirebaseWithOauthProvider(discord)',
+    'loginFirebaseWithOauthProvider(line)',
+    'loginFirebaseWithOauthProvider(facebook)',
     'loginWepinWithOauthProvider(google)',
     'loginWepinWithOauthProvider(apple)',
     'loginWepinWithOauthProvider(naver)',
     'loginWepinWithOauthProvider(discord)',
+    'loginWepinWithOauthProvider(line)',
+    'loginWepinWithOauthProvider(facebook)',
     'loginWepinWithIdToken',
     'loginWepinWithAccessToken',
     'loginWepinWithEmailAndPassword',
@@ -96,6 +95,8 @@ class _MyAppState extends State<MyApp> {
       'loginWithOauthProvider(apple)': () async => loginOauthProvider('apple', appleClientId),
       'loginWithOauthProvider(naver)': () async => loginOauthProvider('naver', naverClientId),
       'loginWithOauthProvider(discord)': () async => loginOauthProvider('discord', discordClientId),
+      'loginWithOauthProvider(line)': () async => loginOauthProvider('line', lineClientId),
+      'loginWithOauthProvider(facebook)': () async => loginOauthProvider('facebook', facebookClientId),
       'signUpWithEmailAndPassword': () async => await loginAndSetLoginResult(() async => wepinLogin?.singUpWithEmailAndPassword(email: 'dfcf1d28a921@drmail.in', password: r'abc1234!')),
       'loginWithEmailAndPassword': () async => await loginAndSetLoginResult(() async => await wepinLogin?.loginWithEmailAndPassword(email: 'dfcf1d28a921@drmail.in', password: r'abc1234!')),
       'loginWithIdToken': () async => loginAndSetLoginResult(() async => await wepinLogin?.loginWithIdToken(idToken: '', sign: wepinLogin!.getSignForLogin(privateKey: privateKey, message: ''))),
@@ -108,10 +109,14 @@ class _MyAppState extends State<MyApp> {
       'loginFirebaseWithOauthProvider(apple)': () async => loginFirebaseOauthProvider('apple', appleClientId),
       'loginFirebaseWithOauthProvider(naver)': () async => loginFirebaseOauthProvider('naver', naverClientId),
       'loginFirebaseWithOauthProvider(discord)': () async => loginFirebaseOauthProvider('discord', discordClientId),
+      'loginFirebaseWithOauthProvider(line)': () async => loginFirebaseOauthProvider('line', lineClientId),
+      'loginFirebaseWithOauthProvider(facebook)': () async => loginFirebaseOauthProvider('facebook', facebookClientId),
       'loginWepinWithOauthProvider(google)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'google', clientId: googleClientId),
       'loginWepinWithOauthProvider(apple)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'apple', clientId: appleClientId),
       'loginWepinWithOauthProvider(naver)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'naver', clientId: naverClientId),
       'loginWepinWithOauthProvider(discord)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'discord', clientId: discordClientId),
+      'loginWepinWithOauthProvider(line)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'line', clientId: lineClientId),
+      'loginWepinWithOauthProvider(facebook)': () async => await wepinLogin!.loginWepinWithOauthProvider(provider: 'facebook', clientId: facebookClientId),
       'loginWepinWithEmailAndPassword': () async => await  wepinLogin?.loginWepinWithEmailAndPassword(email: 'dfcf1d28a921@drmail.in', password: r'abc1234!'),
       'loginWepinWithIdToken': () async => await wepinLogin?.loginWepinWithIdToken(idToken: ''),
       'loginWepinWithAccessToken': () async =>  await wepinLogin?.loginWepinWithAccessToken(accessToken: '', provider: 'naver'),
