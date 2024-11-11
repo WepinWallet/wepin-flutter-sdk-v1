@@ -1,3 +1,8 @@
+## 0.0.10
+
+### Bug Fixes
+- Added missing source code for previous versions.
+
 ## 0.0.9
 
 ### Update
