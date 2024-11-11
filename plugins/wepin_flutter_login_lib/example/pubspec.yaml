@@ -18,7 +18,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  wepin_flutter_login_lib: ^0.0.8
+  wepin_flutter_login_lib: ^0.0.9
     # When depending on this package from a real application you should use:
     #   wepin_flutter_login_lib: ^x.y.z
     # See https://dart.dev/tools/pub/dependencies#version-constraints
