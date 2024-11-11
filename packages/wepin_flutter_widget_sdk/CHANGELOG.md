@@ -3,7 +3,7 @@
 - Updated `wepin_flutter_network` package to v0.0.6
 - Updated `wepin_flutter_modal` package to v0.0.4
 - Updated `wepin_flutter_storage` package to v0.0.5
-- Updated `wepin_flutter_login` package to v0.0.7
+- Updated `wepin_flutter_login` package to v0.0.8
 
 ## 0.0.5
 ###  Update

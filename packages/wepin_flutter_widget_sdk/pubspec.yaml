@@ -20,9 +20,9 @@ dependencies:
   permission_handler: ^11.3.1
   wepin_flutter_common: ^0.0.6
   wepin_flutter_storage: ^0.0.5
-  wepin_flutter_network: ^0.0.6
+  wepin_flutter_network: ^0.0.7
   wepin_flutter_modal: ^0.0.4
-  wepin_flutter_login_lib: ^0.0.7
+  wepin_flutter_login_lib: ^0.0.8
 
 dev_dependencies:
   flutter_test:
