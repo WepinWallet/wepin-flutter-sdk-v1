@@ -12,6 +12,8 @@ final List<Map<String, dynamic>> sdkConfigs = [
       LoginProvider(provider: 'apple', clientId: 'ios-client-id'),
       LoginProvider(provider: 'discord', clientId: 'discord-client-id'),
       LoginProvider(provider: 'naver', clientId: 'naver-client-id'),
+      LoginProvider(provider: 'line', clientId: 'line-client-id'),
+      LoginProvider(provider: 'facebook', clientId: 'facebook-client-id'),
     ]
   },
 ];

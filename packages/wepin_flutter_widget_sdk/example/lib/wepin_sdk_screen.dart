@@ -72,6 +72,12 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
     setState(() {});
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    super.dispose();
+  }
   void showError(String message) {
     showDialog(
       context: context,
@@ -143,7 +149,8 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
         } else {
           fbToken = await wepinSDK!.login.loginWithAccessToken(provider: provider, accessToken: idToken!, sign: sign!);
         }
-
+        final res = LoginResult(provider: 'provider', token: WepinFBToken(idToken: 'idToken', refreshToken: 'refreshToken'));
+        wepinSDK?.login.loginWepin(res);
         final wepinUser = await wepinSDK?.login.loginWepin(fbToken);
         userEmail = wepinUser!.userInfo!.email;
         wepinStatus = await wepinSDK!.getStatus();
@@ -193,6 +200,7 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
     await performActionWithLoading(() async {
       if (wepinSDK != null) {
         wepinStatus = await wepinSDK!.getStatus();
+        print('getStatus wepinStatus : $wepinStatus');
       }
     });
   }
@@ -311,6 +319,8 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
                         _buildActionButton('Login with Apple', () => loginWithProvider('apple', findClientIdByProvider('apple'))),
                         _buildActionButton('Login with Discord', () => loginWithProvider('discord', findClientIdByProvider('discord'))),
                         _buildActionButton('Login with Naver', () => loginWithProvider('naver', findClientIdByProvider('naver'))),
+                        _buildActionButton('Login with Line', () => loginWithProvider('line', findClientIdByProvider('line'))),
+                        _buildActionButton('Login with facebook', () => loginWithProvider('facebook', findClientIdByProvider('facebook'))),
                         _buildActionButton('SignUp with Email', () {
                           showDialog(
                             context: context,
