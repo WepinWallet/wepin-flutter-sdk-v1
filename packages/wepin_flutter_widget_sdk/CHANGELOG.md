@@ -1,3 +1,8 @@
+## 0.0.7
+
+### Update
+ - Updated `wepin_flutter_login` package to v0.0.10
+
 ## 0.0.6
 ### Update
 - Updated `wepin_flutter_network` package to v0.0.8
