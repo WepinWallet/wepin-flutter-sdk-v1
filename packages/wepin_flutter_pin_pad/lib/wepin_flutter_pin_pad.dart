@@ -28,7 +28,6 @@ class WepinPinPad {
   String? domain;
   String? version;
   String defaultLanguage = 'en';
-  String defaultCurrency = 'USD';
   WepinNetwork? _wepinNetwork;
   WepinFirebaseNetwork? _wepinFirebaseNetwork;
   WepinSessionManager? _wepinSessionManager;
@@ -43,15 +42,12 @@ class WepinPinPad {
         _wepinModal = WepinModal(),
         login = WepinLogin(wepinAppKey: wepinAppKey, wepinAppId: wepinAppId);
 
-  Future<void> init({String? language, String? currency}) async {
+  Future<void> init(String? language) async {
     if(_isInitialized) {
       throw WepinError(WepinErrorCode.alreadyInitialized);
     }
     if (language != null) {
       defaultLanguage = language;
-    }
-    if (currency != null ) {
-      defaultCurrency = currency;
     }
     try {
       _isInitialized = false;
@@ -90,13 +86,8 @@ class WepinPinPad {
     return _isInitialized;
   }
 
-  void changeLanguage({language, currency}){
-    if (language != null) {
-      defaultLanguage = language;
-    }
-    if (currency != null ) {
-      defaultCurrency = currency;
-    }
+  void changeLanguage(String language){
+    defaultLanguage = language;
   }
 
   Future<void> finalize() async {
@@ -227,7 +218,7 @@ class WepinPinPad {
 
       ResponseReadyToWidget readyToWidgetData = ResponseReadyToWidget(
           _wepinAppKey,
-          WidgetWebivewAttributes(defaultLanguage: defaultLanguage, defaultCurrency: defaultCurrency),
+          WidgetWebivewAttributes(defaultLanguage: defaultLanguage),
           domain!,
           Platform.isIOS? 3 : 2,
           version!,

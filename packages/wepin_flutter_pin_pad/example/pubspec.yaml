@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   wepin_flutter_common: ^0.0.6
-  wepin_flutter_pin_pad: ^0.0.1
+  wepin_flutter_pin_pad: ^0.0.2
   http: ^1.2.0
 
 dev_dependencies:

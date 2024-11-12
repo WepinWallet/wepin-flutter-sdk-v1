@@ -15,14 +15,9 @@ class WepinSDKScreen extends StatefulWidget {
 }
 
 class WepinSDKScreenState extends State<WepinSDKScreen> {
-  final Map<String, String> currency = {
-    'ko': 'KRW',
-    'en': 'USD',
-    'ja': 'JPY',
-  };
 
   WepinPinPad? wepinPinPad;
-  String? selectedLanguage = 'ko';
+  String selectedLanguage = 'ko';
   String? selectedValue = sdkConfigs[0]['name'];
   String? wepinAppKey;
   String? wepinAppId;
@@ -69,7 +64,7 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
     wepinPinPad?.finalize();
     wepinPinPad = WepinPinPad(wepinAppKey: appKey, wepinAppId: appId);
     networkManager = NetworkManager(appKey: appKey);
-    await wepinPinPad!.init(language: selectedLanguage!, currency: currency[selectedLanguage!]!);
+    await wepinPinPad!.init(selectedLanguage);
     setLoginInfo();
   }
 
@@ -405,7 +400,6 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
         selectedLanguage: selectedLanguage!,
         selectedMode: selectedValue,
         sdkConfigs: sdkConfigs,
-        currency: currency,
         onModeChanged: (value) {
           selectedValue = value;
           final selectedConfig = sdkConfigs.firstWhere((config) => config['name'] == value);
@@ -414,12 +408,12 @@ class WepinSDKScreenState extends State<WepinSDKScreen> {
         },
         onLanguageChanged: (value) {
           setState(() {
+            if(value == selectedLanguage) return;
+            if(value == null) return;
+
             selectedLanguage = value;
             if (wepinPinPad != null) {
-              wepinPinPad?.changeLanguage(
-                language: selectedLanguage,
-                currency: currency[selectedLanguage]!,
-              );
+              wepinPinPad?.changeLanguage(selectedLanguage);
             }
           });
         },

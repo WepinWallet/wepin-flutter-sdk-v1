@@ -6,7 +6,6 @@ class UserDrawer extends StatelessWidget {
   final String selectedLanguage;
   final String? selectedMode;
   final List<Map<String, String>> sdkConfigs;
-  final Map<String, String> currency;
   final Function(String?) onModeChanged;
   final Function(String?) onLanguageChanged;
 
@@ -17,7 +16,6 @@ class UserDrawer extends StatelessWidget {
     required this.selectedLanguage,
     required this.selectedMode,
     required this.sdkConfigs,
-    required this.currency,
     required this.onModeChanged,
     required this.onLanguageChanged,
   }) : super(key: key);

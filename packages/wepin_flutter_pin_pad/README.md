@@ -101,17 +101,15 @@ WepinPinPad wepinPinPad = WepinPinPad(wepinAppKey: wepinAppKey, wepinAppId: wepi
 ### init
 
 ```dart
-await wepinPinPad.init({String? language, String? currency})
+await wepinPinPad.init(String? language)
 ```
 
 #### Parameters
-  - `language` \<String> - The language to be displayed on the widget (default: 'ko'). Currently, only 'ko', 'en', and 'ja' are supported.
-  - `currency` \<String> - The currency to be displayed on the widget (default: 'KRW'). Currently, only 'KRW', 'USD', and 'JPY' are supported.
-
+  - `language` \<String> - The language to be displayed on the widget (default: 'en'). Currently, only 'ko', 'en', and 'ja' are supported.
 #### Example
 
 ```dart
-await wepinPinPad.init(language: 'ko', currency: 'KRW')
+await wepinPinPad.init('ko')
 ```
 
 ### isInitialized
@@ -128,14 +126,13 @@ The `isInitialized()` method checks if the Wepin PinPad Libarary is initialized.
 
 ### changeLanguage
 ```dart
-wepinPinPad.changeLanguage({language, currency})
+wepinPinPad.changeLanguage(String language)
 ```
 
 The `changeLanguage()` method changes the language and currency of the widget.
 
 #### Parameters
 - `language` \<String> - The language to be displayed on the widget. Currently, only 'ko', 'en', and 'ja' are supported.
-- `currency` \<String> - The currency to be displayed on the widget. Currently, only 'KRW', 'USD', and 'JPY' are supported.
 
 #### Returns
 - void
@@ -143,10 +140,7 @@ The `changeLanguage()` method changes the language and currency of the widget.
 #### Example
 
 ```dart
-wepinPinPad.changeLanguage(
-  language: 'ko',
-  currency: 'KRW'
-);
+wepinPinPad.changeLanguage('ko');
 ```
 
 ## ⏩ Method & Variable
