@@ -1,6 +1,6 @@
 name: wepin_flutter_pin_pad
 description: "A Flutter package of Wepin Pin Pad Library"
-version: 0.0.2
+version: 0.0.3
 homepage: https://www.wepin.io
 repository: https://github.com/WepinWallet/wepin-flutter-sdk-v1
 
@@ -18,7 +18,7 @@ dependencies:
   wepin_flutter_common: ^0.0.6
   wepin_flutter_storage: ^0.0.5
   wepin_flutter_network: ^0.0.8
-  wepin_flutter_modal: ^0.0.4
+  wepin_flutter_modal: ^0.0.5
   wepin_flutter_login_lib: ^0.0.10
 
 dev_dependencies:

@@ -145,7 +145,8 @@ wepinPinPad.changeLanguage('ko');
 
 ## ⏩ Method & Variable
 
-Methods and Variables can be used after initialization of Wepin Widget SDK.
+Methods and Variables can be used after initialization of Wepin PinPad Libarary.
+Wepin PinPad Libarary
 
 ### login
 
@@ -202,7 +203,7 @@ Generates a pin block for registration.
    
 #### Returns
  - Future\<RegistrationPinBlock>
-   - UVD: \<EncUVD> - Encrypted PIN
+   - uvd: \<EncUVD> - Encrypted PIN
      - b64Data \<String> - Data encrypted with the original key in b64SKey
      - b64SKey \<String> - A key that encrypts data encrypted with the Wepin's public key.
      - seqNum \<int> - __optionl__ Values to check for when using PIN numbers to ensure they are used in order.
@@ -228,7 +229,7 @@ Generates a pin block for authentication.
    
 #### Returns
  - Future\<AuthPinBlock>
-   - UVDs: \<List<EncUVD>> - Encypted pin list
+   - uvdList: \<List<EncUVD>> - Encypted pin list
      - b64Data \<String> - Data encrypted with the original key in b64SKey
      - b64SKey \<String> - A key that encrypts data encrypted with the wepin's public key.
      - seqNum \<int> - __optionl__ Values to check for when using PIN numbers to ensure they are used in order
@@ -250,7 +251,7 @@ Generate pin block for changing the PIN.
    
 #### Returns
  - Future\<ChangePinBlock>
-   - UVD: \<EncUVD> - Encrypted PIN
+   - uvd: \<EncUVD> - Encrypted PIN
      - b64Data \<String> - Data encrypted with the original key in b64SKey
      - b64SKey \<String> - A key that encrypts data encrypted with the wepin's public key.
      - seqNum \<int> - __optionl__ Values to check for when using PIN numbers to ensure they are used in order
