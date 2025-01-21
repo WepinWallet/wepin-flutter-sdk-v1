@@ -30,7 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  wepin_flutter_widget_sdk: ^0.0.8
+  wepin_flutter_widget_sdk: ^0.0.9
+  wepin_flutter_modal: ^0.0.5
   video_player: ^2.9.1
 
 
