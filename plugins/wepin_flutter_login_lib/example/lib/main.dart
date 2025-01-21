@@ -36,6 +36,7 @@ class _MyAppState extends State<MyApp> {
     'loginWithIdToken',
     'loginWithAccessToken',
     'getRefreshFirebaseToken',
+    'getRefreshFirebaseTokenWithToken',
     'loginWepin',
     'getCurrentWepinUser',
     'loginFirebaseWithOauthProvider(google)',
@@ -102,6 +103,7 @@ class _MyAppState extends State<MyApp> {
       'loginWithIdToken': () async => loginAndSetLoginResult(() async => await wepinLogin?.loginWithIdToken(idToken: '', sign: wepinLogin!.getSignForLogin(privateKey: privateKey, message: ''))),
       'loginWithAccessToken': () async => await loginAndSetLoginResult(() async => await wepinLogin?.loginWithAccessToken(accessToken: '', provider: 'naver', sign: wepinLogin!.getSignForLogin(privateKey: privateKey, message: ''))),
       'getRefreshFirebaseToken': () async => await wepinLogin?.getRefreshFirebaseToken(),
+      'getRefreshFirebaseTokenWithToken': () async =>  await loginAndSetLoginResult(() async =>  wepinLogin?.getRefreshFirebaseToken(prevToken: LoginResult(provider: 'google', token: WepinFBToken(idToken: '---', refreshToken: '---')))),
       'loginWepin': () async => await loginWepin(),
       'getCurrentWepinUser': () async => await wepinLogin?.getCurrentWepinUser(),
 

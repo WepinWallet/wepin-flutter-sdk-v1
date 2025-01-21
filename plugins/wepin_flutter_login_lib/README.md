@@ -446,13 +446,19 @@ final res = await wepinLogin.loginWithIdToken(
 
 ### getRefreshFirebaseToken
 ```dart
-await wepinLogin.getRefreshFirebaseToken()
+await wepinLogin.getRefreshFirebaseToken({LoginResult? prevToken})
 ```
 
 The `getRefreshFirebaseToken()` method retrieves the current Firebase token's information from Wepin.
 
-#### Parameters
-- None
+
+#### Parameters (Supported from version 0.0.11)
+- prevToken \<LoginResult> - __optional__ The previous login result containing token information, which can be used for refreshing.
+
+> [!NOTE]
+> The `prevToken` parameter is supported from version 0.0.11.
+> - If no parameter is provided, the stored token will be used to refresh and update storage. This option is only available if the Wepin login session has not expired.
+> - If a 'prevToken' parameter is provided, the passed token will be used to refresh regardless of the Wepin login session's expiration status.
 
 #### Returns
 - Future\<LoginResult>

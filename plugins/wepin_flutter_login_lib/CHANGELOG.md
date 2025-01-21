@@ -1,3 +1,8 @@
+## 0.0.11
+
+### Update
+ - Updated `getRefreshFirebaseToken` to optionally accept a token parameter.
+
 ## 0.0.10
 
 ### Bug Fixes

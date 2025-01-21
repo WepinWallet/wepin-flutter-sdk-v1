@@ -378,12 +378,17 @@ class WepinLogin {
     return await _doFirebaseLoginWithCustomToken(res.token!, 'external_token');
   }
 
-  Future<LoginResult> getRefreshFirebaseToken() async {
+  Future<LoginResult> getRefreshFirebaseToken({LoginResult? prevToken}) async {
     if (!_isInitialized) {
       throw WepinError(WepinErrorCode.notInitialized);
     }
     if(_wepinNetwork == null || _wepinFirebaseNetwork == null) {
       throw WepinError(WepinErrorCode.notInitializedNetwork);
+    }
+
+    if(prevToken != null) {
+      final response = await _wepinFirebaseNetwork!.getRefreshIdToken(GetRefreshIdTokenRequest(refreshToken: prevToken.token.refreshToken));
+      return LoginResult(provider: prevToken.provider, token: WepinFBToken(idToken: response.idToken, refreshToken: response.refreshToken));
     }
 
     final sessionExists = await _wepinSessionManager!.checkExistFirebaseLoginSession();
