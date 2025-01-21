@@ -1,3 +1,9 @@
+## 0.0.4
+
+### Updated:
+ - Updated `wepin_flutter_login_lib` to v0.0.11
+   - Updated `getRefreshFirebaseToken` to optionally accept a token parameter. 
+
 ## 0.0.3
 
 ### Updated:
