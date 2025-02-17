@@ -18,6 +18,8 @@
 
 [![pub package](https://img.shields.io/pub/v/wepin_flutter_login_lib.svg?logo=flutter&style=for-the-badge)](https://pub.dartlang.org/packages/wepin_flutter_login_lib)
 
+[![pub package_pre_release](https://img.shields.io/pub/v/wepin_flutter_login_lib.svg?logo=flutter&style=for-the-badge&include_prereleases)](https://pub.dartlang.org/packages/wepin_flutter_login_lib)
+
 [![platform - android](https://img.shields.io/badge/platform-Android-3ddc84.svg?logo=android&style=for-the-badge)](https://www.android.com/) [![platform - ios](https://img.shields.io/badge/platform-iOS-000.svg?logo=apple&style=for-the-badge)](https://developer.apple.com/ios/)
 
 Wepin Login Library from Flutter. This package is exclusively available for use in android and ios environments.
@@ -31,8 +33,8 @@ After signing up for [Wepin Workspace](https://workspace.wepin.io/), navigate to
 - Android API version **21** or newer is required.
 - iOS version **13** or newer is required.
     - Update the `platform :ios` version to **13.0** in the `ios/Podfile` of your Flutter project. Verify and modify the `ios/Podfile` as needed.
-- Dart version **2.18.3** or newer is required.
-- Flutter version **3.3.0** or newer is required.
+- Dart version **3.5.0** or newer is required.
+- Flutter version **3.24.0** or newer is required.
 
 > [!NOTE]
 > 
@@ -50,13 +52,26 @@ After signing up for [Wepin Workspace](https://workspace.wepin.io/), navigate to
 >    }
 >    ```
 
+> ⚠️ Important Notice for v1.0.0 Update
+>
+> 🚨 Breaking Changes & Migration Guide 🚨
+>
+> This update includes major changes that may impact your app. Please read the following carefully before updating.
+>
+> 🔄 Storage Migration from flutter_secure_storage to Native Storage
+> •	In previous versions, this package used flutter_secure_storage for secure data storage.
+> •	Starting from v1.0.0, data is now stored using a native implementation (iOS Keychain / Android EncryptedSharedPreferences).
+> •	Any existing data stored with flutter_secure_storage will automatically migrate to the new native storage during the first app launch after updating.
+> •	⚠️ Downgrading to an older version after updating to v1.0.0 may prevent access to previously stored data.
+> •	Recommended: Backup your data before updating to avoid any potential issues.
+
 
 ## ⏩ Install
 Add the `wepin_flutter_login_lib` dependency in your pubspec.yaml file:
 
 ```yaml
 dependencies:
-  wepin_flutter_login_lib: ^0.0.9
+  wepin_flutter_login_lib: ^1.0.0
 ```
 or run the following command:
 
@@ -66,6 +81,21 @@ flutter pub add wepin_flutter_login_lib
 
 
 ## ⏩ Getting Started
+
+> ⚠️ Android-Specific Requirement
+> 
+> To ensure proper functionality on Android, you must disable Android’s automatic backup feature.
+> 
+> 🔧 How to Disable Backup (Android)
+>
+> Modify your AndroidManifest.xml file:
+>    
+>    ```xml
+>    <application
+>        android:allowBackup="false"
+>        android:fullBackupContent="false">
+>    ```
+> 🔹 If android:allowBackup is true, the migration process may not work correctly, leading to potential data loss or storage issues.
 
 ### Deep Link Setting
 The Deep Link configuration is required for logging into Wepin. Setting up the Deep Link Scheme allows your app to handle external URL calls.
@@ -473,7 +503,7 @@ The `getRefreshFirebaseToken()` method retrieves the current Firebase token's in
 -
 #### Example
 ```dart
-final user = await wepinLogin.getRefreshFirebaseToken();
+final user = await wepinLogin.getRefreshFirebaseToken({LoginResult? prevToken});
 ```
 - response
 ```dart

@@ -1,3 +1,17 @@
+## 1.0.0-beta.1
+
+This new major release has some big changes.
+This plugin requires a minimum dart sdk of 3.5.0 or higher and a minimum flutter version of 3.24.0.
+
+### Update
+- Updated Flutter, Dart, and Gradle versions
+  - Dart: v3.5.0
+  - Flutter: v3.24.0
+  - Gradle: v8.2.1
+- Updated `wepin_flutter_storage` package to v1.0.0-beta.1
+  - Migration from `flutter_secure_storage` to native storage (iOS/Android)
+- Replaced `flutter_bcrypt` with native implementation
+
 ## 0.0.11
 
 ### Update

@@ -20,7 +20,7 @@ class WepinLoginSessionManager extends WepinSessionManager {
   }
 
   Future<void> setLoginUserStorage(LoginResult request, LoginResponse response) async {
-    await wepinStorage.clearAllLocalStorageWithAppId();
+    await wepinStorage.clearAllLocalStorage();
     await wepinStorage.setLocalStorage<IFirebaseWepin>(
       StorageDataType.firebaseWepin,
         IFirebaseWepin(

@@ -2,6 +2,7 @@ import AppAuth
 import AuthenticationServices
 import Flutter
 import UIKit
+import BCryptSwift
 
 public class WepinFlutterLoginLibPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -348,10 +349,23 @@ public class WepinFlutterLoginLibPlugin: NSObject, FlutterPlugin {
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        case "authorize":
-            authorization(arguments: (call.arguments as! [String : Any]), result: result)
-        default:
-          result(FlutterMethodNotImplemented)
+            case "authorize":
+                authorization(arguments: (call.arguments as! [String : Any]), result: result)
+                break
+            case "hashPw":
+                // Based on MIT-licensed code from Flutter_Bcrypt
+                // Original repository: https://github.com/jeroentrappers/flutter_bcrypt
+                guard let args = call.arguments as? [String: String] else {
+                    fatalError("args are badly formatted")
+                }
+
+                let password = args["password"]!
+                let salt = args["salt"]!
+
+                result(BCryptSwift.hashPassword(password, withSalt: salt))
+                break
+            default:
+              result(FlutterMethodNotImplemented)
         }
     }
 }

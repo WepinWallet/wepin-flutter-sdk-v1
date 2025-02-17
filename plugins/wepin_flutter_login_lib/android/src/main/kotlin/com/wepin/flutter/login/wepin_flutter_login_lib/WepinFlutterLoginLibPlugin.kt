@@ -7,6 +7,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.browser.customtabs.CustomTabsIntent
+import at.favre.lib.bytes.Bytes
+import at.favre.lib.crypto.bcrypt.BCrypt
+import at.favre.lib.crypto.bcrypt.BCrypt.SALT_LENGTH
+import at.favre.lib.crypto.bcrypt.Radix64Encoder
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -288,11 +292,66 @@ class WepinFlutterLoginLibPlugin: FlutterPlugin, MethodCallHandler, PluginRegist
     }
   }
 
+  fun MethodCall.password(): String? {
+    return this.argument("password")
+  }
+
+  fun MethodCall.salt(): String? {
+    return this.argument("salt")
+  }
+
   override fun onMethodCall(call: MethodCall, result: Result) {
     val arguments: Map<String, Any>? = call.arguments()
      if (call.method == "authorize"){
       authorize(arguments!!, result)
-    }else {
+    } else if(call.method == "hashPw") {
+       // Based on MIT-licensed code from Flutter_Bcrypt
+       // Original repository: https://github.com/jeroentrappers/flutter_bcrypt
+       val salt: String = call.salt()!!
+       val realSalt: String
+       val rounds: Int
+       val off: Int
+       var minor = 'b'
+       val password: String = call.password()!!
+       var version: BCrypt.Version = BCrypt.Version.VERSION_2B
+
+       if (salt[0] != '\$' || salt[1] != '2') {
+         throw Exception("Invalid salt version")
+       }
+       if (salt[2] == '\$') {
+         off = 3
+       } else {
+         minor = salt[2]
+         if ((minor != 'a' && minor != 'b' && minor != 'y') || salt[3] != '\$') {
+           throw Exception("Invalid salt revision")
+         }
+         off = 4
+       }
+
+       // Extract number of rounds
+       if (salt[off + 2] > '\$') {
+         throw Exception("Missing salt rounds")
+       }
+       rounds = Integer.parseInt(salt.substring(off, off + 2))
+
+       realSalt = salt.substring(off + 3, off + 25)
+
+       if ('a' == minor) {
+         version = BCrypt.Version.VERSION_2A
+       } else if ('b' == minor) {
+         version = BCrypt.Version.VERSION_2B
+       }
+
+       val hash = BCrypt.with(version).hash(
+         rounds,
+         Radix64Encoder.Default().decode(realSalt.toByteArray(Charsets.UTF_8)),
+         password.toByteArray(Charsets.UTF_8)
+       )
+
+       val r = String(hash, Charsets.UTF_8)
+
+       result.success(r)
+     } else {
       result.notImplemented()
     }
   }

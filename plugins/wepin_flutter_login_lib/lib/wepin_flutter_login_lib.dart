@@ -16,7 +16,7 @@ import 'package:wepin_flutter_network/wepin_firebase_network_types.dart';
 import 'package:wepin_flutter_network/wepin_network.dart';
 import 'package:wepin_flutter_network/wepin_network_types.dart';
 import 'wepin_flutter_login_lib_platform_interface.dart';
-import 'package:flutter_bcrypt/flutter_bcrypt.dart';
+// import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 
 import 'package:ecdsa/ecdsa.dart';
 import 'package:elliptic/elliptic.dart';
@@ -50,6 +50,7 @@ class WepinLogin {
       if(firebaseKey != null){
         _wepinFirebaseNetwork = WepinFirebaseNetwork(firebaseKey: firebaseKey);
         _wepinSessionManager = WepinLoginSessionManager(appId: wepinAppId, wepinNetwork: _wepinNetwork!, wepinFirebaseNetwork: _wepinFirebaseNetwork!);
+        _wepinSessionManager?.init();
         _isInitialized = true;
       }
     }catch(e){
@@ -165,7 +166,7 @@ class WepinLogin {
     final resPwState = await _wepinNetwork!.getUserPasswordState(email.trim());
     isPasswordResetRequired = resPwState.isPasswordResetRequired;
 
-    final encPassword = await FlutterBcrypt.hashPw(
+    final encPassword = await WepinFlutterLoginLibPlatform.instance.hashPw(
         password: password,
         salt: bcryptSalt); // bcrypt!!!
     final resPassword = isPasswordResetRequired?  password : encPassword;

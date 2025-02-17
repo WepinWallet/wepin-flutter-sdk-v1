@@ -16,6 +16,7 @@ wepin login library for flutter
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
   s.dependency "AppAuth" , "~> 1.7.5"
+  s.dependency 'BCryptSwift', '~> 1.1'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.

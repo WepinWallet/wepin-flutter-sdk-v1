@@ -15,4 +15,10 @@ class MethodChannelWepinFlutterLoginLib extends WepinFlutterLoginLibPlatform {
     final token = await methodChannel.invokeMethod('authorize', config.toJson());
     return AuthorizeResult.fromJson(token);
   }
+
+  @override
+  Future<String> hashPw({required String password, required String salt}) async {
+    return await methodChannel.invokeMethod(
+        'hashPw', {'password': password, 'salt': salt});
+  }
 }

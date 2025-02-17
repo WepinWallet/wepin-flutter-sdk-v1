@@ -27,4 +27,8 @@ abstract class WepinFlutterLoginLibPlatform extends PlatformInterface {
   Future<AuthorizeResult?> authorize(AuthConfiguration config) {
     throw UnimplementedError('authorize() has not been implemented.');
   }
+
+  Future<String> hashPw({required String password, required String salt}) {
+    throw UnimplementedError('hashPw() has not been implemented.');
+  }
 }
