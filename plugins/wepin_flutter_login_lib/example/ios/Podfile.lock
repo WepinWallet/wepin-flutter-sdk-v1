@@ -7,9 +7,6 @@ PODS:
     - AppAuth/Core
   - BCryptSwift (1.1)
   - Flutter (1.0.0)
-  - flutter_bcrypt (0.0.1):
-    - BCryptSwift (~> 1.1)
-    - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
   - integration_test (0.0.1):
@@ -21,16 +18,19 @@ PODS:
     - Flutter
   - wepin_flutter_login_lib (0.0.1):
     - AppAuth (~> 1.7.5)
+    - BCryptSwift (~> 1.1)
+    - Flutter
+  - wepin_flutter_storage (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_bcrypt (from `.symlinks/plugins/flutter_bcrypt/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - wepin_flutter_common (from `.symlinks/plugins/wepin_flutter_common/ios`)
   - wepin_flutter_login_lib (from `.symlinks/plugins/wepin_flutter_login_lib/ios`)
+  - wepin_flutter_storage (from `.symlinks/plugins/wepin_flutter_storage/ios`)
 
 SPEC REPOS:
   trunk:
@@ -40,8 +40,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_bcrypt:
-    :path: ".symlinks/plugins/flutter_bcrypt/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   integration_test:
@@ -52,17 +50,19 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wepin_flutter_common/ios"
   wepin_flutter_login_lib:
     :path: ".symlinks/plugins/wepin_flutter_login_lib/ios"
+  wepin_flutter_storage:
+    :path: ".symlinks/plugins/wepin_flutter_storage/ios"
 
 SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
   BCryptSwift: f69992ea5685f6714260842c2770688043b89ab2
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_bcrypt: 8ae63c682225f69d9981465509cb26b9e93522ef
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   wepin_flutter_common: 505ac18aa0e2b9878d5d728df83d3ecd8bb93db9
-  wepin_flutter_login_lib: 7a5c331e8de42fc7423dcddc0ca0cb21341c0826
+  wepin_flutter_login_lib: 9ba2241f48e8d434199b1974be9186f42d7df1c3
+  wepin_flutter_storage: 3400570869672a0e9bd4a11751ac28377fbe8967
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 

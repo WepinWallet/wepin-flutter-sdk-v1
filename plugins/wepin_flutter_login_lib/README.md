@@ -18,8 +18,6 @@
 
 [![pub package](https://img.shields.io/pub/v/wepin_flutter_login_lib.svg?logo=flutter&style=for-the-badge)](https://pub.dartlang.org/packages/wepin_flutter_login_lib)
 
-[![pub package_pre_release](https://img.shields.io/pub/v/wepin_flutter_login_lib.svg?logo=flutter&style=for-the-badge&include_prereleases)](https://pub.dartlang.org/packages/wepin_flutter_login_lib)
-
 [![platform - android](https://img.shields.io/badge/platform-Android-3ddc84.svg?logo=android&style=for-the-badge)](https://www.android.com/) [![platform - ios](https://img.shields.io/badge/platform-iOS-000.svg?logo=apple&style=for-the-badge)](https://developer.apple.com/ios/)
 
 Wepin Login Library from Flutter. This package is exclusively available for use in android and ios environments.
@@ -59,10 +57,15 @@ After signing up for [Wepin Workspace](https://workspace.wepin.io/), navigate to
 > This update includes major changes that may impact your app. Please read the following carefully before updating.
 >
 > 🔄 Storage Migration from flutter_secure_storage to Native Storage
+> 
 > •	In previous versions, this package used flutter_secure_storage for secure data storage.
+> 
 > •	Starting from v1.0.0, data is now stored using a native implementation (iOS Keychain / Android EncryptedSharedPreferences).
+> 
 > •	Any existing data stored with flutter_secure_storage will automatically migrate to the new native storage during the first app launch after updating.
+> 
 > •	⚠️ Downgrading to an older version after updating to v1.0.0 may prevent access to previously stored data.
+> 
 > •	Recommended: Backup your data before updating to avoid any potential issues.
 
 
