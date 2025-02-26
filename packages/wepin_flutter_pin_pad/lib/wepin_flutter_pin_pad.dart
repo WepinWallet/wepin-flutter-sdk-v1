@@ -59,6 +59,7 @@ class WepinPinPad {
       if(firebaseKey != null){
         _wepinFirebaseNetwork = WepinFirebaseNetwork(firebaseKey: firebaseKey);
         _wepinSessionManager = WepinSessionManager(appId: wepinAppId, wepinNetwork: _wepinNetwork!, wepinFirebaseNetwork: _wepinFirebaseNetwork!);
+        await _wepinSessionManager?.init();
         await login.init();
         _widgetUrl = getWepinSdkUrl(_wepinAppKey)['wepinWebview'];
         await _checkLoginStatus();
@@ -121,8 +122,12 @@ class WepinPinPad {
       if (response.body.state == 'SUCCESS') {
         completer.complete(response.body.data);
       } else {
-        completer.completeError(
-            WepinError(WepinErrorCode.unknownError, '${response.body.data}'));
+        if(response.body.data == 'User Cancel'){
+          completer.completeError(WepinError(WepinErrorCode.userCancelled));
+        } else {
+          completer.completeError(
+              WepinError(WepinErrorCode.unknownError, '${response.body.data}'));
+        }
       }
       return;
     };
