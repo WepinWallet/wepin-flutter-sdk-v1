@@ -70,6 +70,7 @@ class WepinWidgetSDK {
       if(firebaseKey != null){
         _wepinFirebaseNetwork = WepinFirebaseNetwork(firebaseKey: firebaseKey);
         _wepinSessionManager = WepinSessionManager(appId: wepinAppId, wepinNetwork: _wepinNetwork!, wepinFirebaseNetwork: _wepinFirebaseNetwork!);
+        await _wepinSessionManager?.init();
         await login.init();
         _widgetUrl = getWepinSdkUrl(_wepinAppKey)['wepinWebview'];
         await _checkLoginStatusAndSetLifecycle();

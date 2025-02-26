@@ -1,3 +1,16 @@
+## 1.0.0
+
+### Update
+- Updated Flutter, Dart, and Gradle versions
+  -	Dart: v3.5.0
+  - Flutter: v3.24.0
+  - Gradle: v8.2.1
+- Updated `wepin_flutter_login_lib` package to v1.0.0
+- Updated `wepin_flutter_network` package to v1.0.0
+- Updated `wepin_flutter_storage` package to v1.0.0
+  - Migration from `flutter_secure_storage` to native storage (iOS/Android)
+  - Fixed storage issue caused by MasterKey change (Now resets storage properly).
+
 ## 0.0.9
 
 ### Updated:

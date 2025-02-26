@@ -32,15 +32,34 @@ After signing up for [Wepin Workspace](https://workspace.wepin.io/), navigate to
   - Set `compileSdkVersion` to **34** in the `android/app/build.gradle` file.
 - iOS version **13** or newer is required.
   - Update the `platform :ios` version to **13.0** in the `ios/Podfile` of your Flutter project. Verify and modify the `ios/Podfile` as needed.
-- Dart version **2.18.3** or newer is required.
-- Flutter version **3.3.0** or newer is required.
+- Dart version **3.5.0** or newer is required.
+- Flutter version **3.24.0** or newer is required.
+
+
+> ⚠️ Important Notice for v1.0.0 Update
+>
+> 🚨 Breaking Changes & Migration Guide 🚨
+>
+> This update includes major changes that may impact your app. Please read the following carefully before updating.
+>
+> 🔄 Storage Migration from flutter_secure_storage to Native Storage
+> •	In previous versions, this package used flutter_secure_storage for secure data storage.
+> 
+> •	Starting from v1.0.0, data is now stored using a native implementation (iOS Keychain / Android EncryptedSharedPreferences).
+> 
+> •	Any existing data stored with flutter_secure_storage will automatically migrate to the new native storage during the first app launch after updating.
+> 
+> •	⚠️ Downgrading to an older version after updating to v1.0.0 may prevent access to previously stored data.
+> 
+> •	Recommended: Backup your data before updating to avoid any potential issues.
+
 
 ## ⏩ Install
 Add the `wepin_flutter_widget_sdk` dependency in your pubspec.yaml file:
 
 ```yaml
 dependencies:
-  wepin_flutter_widget_sdk: ^0.0.6
+  wepin_flutter_widget_sdk: ^1.0.0
 ```
 or run the following command:
 
@@ -49,6 +68,24 @@ flutter pub add wepin_flutter_widget_sdk
 ```
 
 ## ⏩ Getting Started
+
+> ⚠️ Android-Specific Requirement
+>
+> To ensure proper functionality on Android, you must disable Android’s automatic backup feature.
+>
+> 🔧 How to Disable Backup (Android)
+>
+> Modify your AndroidManifest.xml file:
+>
+>    ```xml
+>    <application
+>        android:allowBackup="false"
+>        android:fullBackupContent="false"
+>        ...
+>    >
+>    ```
+> 🔹 If android:allowBackup is true, the migration process may not work correctly, leading to potential data loss or storage issues.
+
 
 ### Config Deep Link
 
